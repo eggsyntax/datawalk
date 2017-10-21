@@ -17,7 +17,7 @@
  "!" ":function ; call an arbitrary 1-arg fn on data, jump to result"
  }
 
-(defn- read-int [s]
+(defn read-int [s]
   #?(:clj (try (Integer/parseInt s)
                (catch NumberFormatException _ nil))
      :cljs (let [n (js/parseInt s)]

@@ -18,10 +18,10 @@
 (def saved (atom {}))
 
 ;; the past (visited nodes),
-(def past (atom []))
+(def the-past (atom []))
 
 ;; and the future.
-(def future (atom []))
+(def the-future (atom []))
 
 ;; Throughout: d = data
 
@@ -59,46 +59,42 @@
 ;;;;;;; User API
 
 ;; All API fns take data as their final argument, and return
-;; updated data. Changes to the paths or saved atoms are made
-;; inline as side effects.
+;; updated data. Changes to the paths, saved, the-past, and the-future atoms are
+;; made inline as side effects.
 
 (defn no-op [data]
   data)
-
-(defn exit [data]
-  ;; Print final stuff (maybe just passed in as d)
-  (reset-data! nil))
 
 (defn drill
   "Given a number n, drill down to that numbered item"
   [n data]
   ;; (println "drilling into" data)
-  (let [paths @paths]
-    (cond (sequential? data)
-         , (let [next-data (nth data n)
-                 ;; _ (println "conjing (in seq) onto" (type paths))
-                 next-path (conj (paths data) n)]
-             (swap! paths assoc (not-set next-data) next-path)
-             next-data)
-         (map? data)
-         , (let [;_ (println "nonsequential data is a" (type data))
-                 ks (keys data)
-                 _ (println "ks:" ks)
-                 k (nth ks n)
-                 ;; _ (println "conjing (in map) onto" (type (paths data)))
-                 next-data (get data k)
-                 _ (prn "next-data" next-data)
-                 _ (prn "k:" k)
-                 next-path (conj (paths data) k)]
-             _ (prn "next-path" next-path)
-             ;; (println "k:" k)
-             (swap! paths assoc (not-set next-data) next-path)
-             next-data)
-         :else ; not drillable; no-op
-         , (do (println "Can't drill into a" (type data))
-               data))))
+  (cond (sequential? data)
+        , (let [next-data (nth data n)
+                ;; _ (println "conjing (in seq) onto" (type @paths))
+                next-path (conj (@paths data) n)]
+            (swap! paths assoc (not-set next-data) next-path)
+            next-data)
+        (map? data)
+        , (let [;_ (println "nonsequential data is a" (type data))
+                ks (keys data)
+                k (nth ks n)
+                ;; _ (println "conjing (in map) onto" (type (@paths data)))
+                next-data (get data k)
+                next-path (conj (@paths data) k)]
+            ;; (println "k:" k)
+            (swap! paths assoc (not-set next-data) next-path)
+            next-data)
+        :else ; not drillable; no-op
+        , (do (println "Can't drill into a" (type data))
+              data)))
 
-(defn exit-with-current [data])
+(defn exit [data]
+  ;; Returns saved data
+  @saved)
+
+(defn exit-with-current [data]
+  data)
 
 (defn save-current [data])
 

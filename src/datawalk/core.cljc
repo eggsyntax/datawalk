@@ -45,13 +45,20 @@
 ;;   - I could make users copy-paste over into clj :(
 
 
-(defn initialize []
-  (w/reset-data! {:a 1 :b {:c 2 :d 3}})
-  (reset! w/paths {})
-  (reset! w/saved {}))
+(def causes-recur?
+  #{'w/save-current 'w/save-path 'w/backward 'w/forward 'w/root 'w/up})
 
-(defn read-input [prompt]
-  (print prompt)
+(defn initialize [d]
+  (w/reset-data! d)
+  (reset! w/paths {})
+  (reset! w/saved {})
+  (reset! w/the-past {})
+  (reset! w/the-future {})
+  )
+
+(defn read-input []
+  ;; (print prompt)
+  (flush)
   (let [input (read-line)]
     (println input)
     input))
@@ -59,6 +66,26 @@
 (defn datawalk
   "Runs a small, self-contained REPL for exploring data."
   [d]
-  (println "yo")
-  (initialize)
+  (println "Exploring.\n")
+  (initialize d)
+  (pr/print-data d)
+  (loop [data @w/data]
+    (print ".dw.> ")
+    (let [in (read-input)
+          f (ps/parse in)
+          result (if f (f data) data)]
+      ;; Maybe I don't even need to store it, although users might like that
+      ;; (w/reset-data! result)
+      (pr/print-data result)
+      (if (or (ps/read-int in) ; it's a #, ie a drill command
+              (causes-recur? f))
+        ;; (do (prn "recurring")
+        ;;     result)
+        (recur result)
+        result)
+      )))
+
+(comment
+
+  (datawalk {:a 1 :b {:c 2 :d 3}})
   )
