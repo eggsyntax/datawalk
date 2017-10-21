@@ -1,5 +1,6 @@
 (ns datawalk.parse
-  "Parses user input into a call to a fn in datawalk.datawalk")
+  "Parses user input into a call to a fn in datawalk.datawalk"
+  (:require '[datawalk.datawalk :as w]))
 
 
 {"#" "Enter any number to jump to the corresponding item"
@@ -16,14 +17,17 @@
  "!" ":function ; call an arbitrary 1-arg fn on data, jump to result"
  }
 
-;;
-;;
-;;
-;;
-;;
-;;
-;;
-;;
-;;
-;;
-;;
+(defn- read-int [s]
+  #?(:clj (try (Integer/parseInt s)
+               (catch NumberFormatException _ nil))
+     :cljs (let [n (js/parseInt s)]
+             (if (number? n) n nil))))
+
+(defn parse [inp]
+  ;; (println "raw input: " inp)
+  ;; If #: drill into that value
+  (if-let [n (read-int inp)]
+    (partial w/drill n)
+    ;; else: get fn to call on data
+    (get cmd-map inp
+         (fn [ent] (do (println "Unknown command:" inp) (no-op ent))))))
