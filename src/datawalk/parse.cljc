@@ -1,6 +1,6 @@
 (ns datawalk.parse
   "Parses user input into a call to a fn in datawalk.datawalk"
-  (:require '[datawalk.datawalk :as w]))
+  (:require [datawalk.datawalk :as w]))
 
 
 {"#" "Enter any number to jump to the corresponding item"
@@ -23,6 +23,28 @@
      :cljs (let [n (js/parseInt s)]
              (if (number? n) n nil))))
 
+(def cmd-map
+  ;; Special commands get keywords; the rest are fns that will be called on the data
+  {"q" w/exit
+   "x" w/exit-with-current ; exit & return just this ent
+   "s" w/save-current ; save to map of return values
+   "v" w/save-path ; save path to map of return values
+   "b" w/backward ; step backward in history
+   "f" w/forward ; step forward in history
+   "r" w/root ; jump back to root
+   "u" w/up ; step upward [provides list of referring entities]
+   "h" w/print-help ; print help & return same ent
+   "p" w/print-path ; path: print path to current item.
+   "!" w/function ; call an arbitrary 1-arg fn on data, jump to result
+   "?" w/print-help
+   ;; Not yet written:
+   "t" nil ; type: print the type of the current item
+   ;; possibles: map and filter cmds, similar to function cmd.
+   ;; all others become no-op
+   "" nil ;
+   })
+
+
 (defn parse [inp]
   ;; (println "raw input: " inp)
   ;; If #: drill into that value
@@ -30,4 +52,5 @@
     (partial w/drill n)
     ;; else: get fn to call on data
     (get cmd-map inp
-         (fn [ent] (do (println "Unknown command:" inp) (no-op ent))))))
+         (fn [data] (do (println "Unknown command:" inp)
+                      (w/no-op data))))))

@@ -35,6 +35,9 @@
 
 ;;;;;;; User API
 
+(defn no-op [data]
+  data)
+
 (defn exit [data]
   ;; Print final stuff (maybe just passed in as d)
   (reset-data! nil))
@@ -83,7 +86,7 @@
 ;; TODO maybe?
 (defn up [data])
 
-(defn help [data])
+(defn print-help [data])
 
 (defn print-path [data])
 

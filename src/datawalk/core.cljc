@@ -1,5 +1,5 @@
 (ns datawalk.core
-  (:require [datawalk.datawalk :as dw]
+  (:require [datawalk.datawalk :as w]
             [datawalk.print    :as pr]
             [datawalk.parse    :as ps]
             #_[clojure.string :as string]
@@ -25,9 +25,23 @@
 ;;   - https://github.com/abiocljs (@mfikes)
 ;;   - https://github.com/potetm/tire-iron
 ;;   - https://www.google.com/search?q=IReplEnvOption
+;; - Assumption: the order of (keys m) will be consistent during a session.
+;;   Empirically, this seems to be true, although I wouldn't necessarily trust
+;;   it in production code.
+
+
+(defn initialize []
+  )
+
+(defn read-input [prompt]
+  (print prompt)
+  (let [input (read-line)]
+    (println input)
+    input))
 
 (defn datawalk
   "Runs a small, self-contained REPL for exploring data."
   [d]
   (println "yo")
+  (initialize)
   )
