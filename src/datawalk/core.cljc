@@ -1,8 +1,16 @@
 (ns datawalk.core
-  (:require [clojure.string :as string]
-            [clojure.tools.reader :as rdr]
-            [clojure.tools.reader.reader-types :as rdrt]
+  (:require #_[clojure.string :as string]
+            #_[clojure.tools.reader :as rdr]
+            #_[clojure.tools.reader.reader-types :as rdrt]
             ))
+
+;; Dependencies:
+;; core
+;;   datawalk
+;;     state
+;;   parse
+;;   print
+
 
 ;; Notes:
 ;; Throughout: d = data

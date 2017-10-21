@@ -11,6 +11,6 @@
                                    :optimizations :whitespace
                                    :pretty-print true}}]}
   :profiles {:dev {:dependencies [[com.cemerick/piggieback "0.2.2"]
-                                  [org.clojure/tools.reader "1.0.5"]
+                                  #_[org.clojure/tools.reader "1.0.5"]
                                   [org.clojure/tools.nrepl "0.2.10"]]
                    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}})
