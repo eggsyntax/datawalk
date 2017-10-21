@@ -44,22 +44,24 @@
 ;;     worked in all browser repls :(
 ;;   - I could make users copy-paste over into clj :(
 
+(def prompt ".dw.> ")
 
-;; TODO switch to `prevents-recur?`? There are fewer.
-(def causes-recur?
-  #{w/save-current w/save-path w/backward w/forward w/root w/up w/print-help w/print-path})
+(def exit-command? #{w/exit w/exit-with-current})
 
 (defn initialize [d]
   (w/reset-data! d)
   ;; Start with (empty) path to root
   (reset! w/paths {d []})
   (reset! w/saved {})
-  (reset! w/the-past {})
-  (reset! w/the-future {})
+  (reset! w/the-past [])
+  (reset! w/the-future [])
   )
 
-(defn read-input []
-  ;; (print prompt)
+(defn read-input
+  ;; TODO
+  "Get user input (at repl) -- later this needs to be generalized for both clj
+  and the various cljs environments."
+  []
   (flush)
   (let [input (read-line)]
     (println input)
@@ -71,22 +73,21 @@
   [d]
   (println "Exploring.\n")
   (initialize d)
-  (loop [data @w/data]
+  (loop [data d]
+    (println "past:   " @w/the-past)
+    (println "future: " @w/the-future)
+    (println)
     (pr/print-data data)
-    (print ".dw.> ")
+    (print prompt)
     (let [in (read-input)
           f (ps/parse in)
-          _ (def gg f)
-          _ (prn "f:" f "; causes-recur?" (causes-recur? f))
           result (if f (f data) data)]
       ;; Maybe I don't even need to store it, although users might like that
       ;; (w/reset-data! result)
-      (if (or (ps/read-int in) ; it's a #, ie a drill command
-              (causes-recur? f))
-        ;; (do (prn "recurring")
-        ;;     result)
-        (recur result)
-        result)
+      (if (exit-command? f)
+        result
+        (do (swap! w/the-past conj result)
+            (recur result)))
       )))
 
 (comment

@@ -35,8 +35,13 @@
 ;; popped value as the new present
 ;; from & to are past & future in some order
 (defn- time-travel [from-time present to-time]
-  (if (seq to-time)
-    [(conj from-time present) (peek to-time) (pop to-time)]
+  (if (seq @to-time)
+    (let [new-present (peek @to-time)]
+      (prn "new-present:" new-present)
+      (swap! from-time conj present)
+      (swap! to-time pop)
+      new-present)
+    ;; [(conj from-time present) (peek to-time) (pop to-time)]
     (do (println "You have reached the end of time. You shall go no further.\n")
         [from-time present to-time])))
 
@@ -49,12 +54,12 @@
 (defn reset-data! [d]
   (reset! data d))
 
-(defn- move-forward [past present future]
-  (time-travel past present future))
+;; (defn- move-forward [past present future]
+;;   (time-travel past present future))
 
-(defn- move-backward [past present future]
-  (reverse ; we reverse because time-travel always returns [from-time present to-time]
-   (time-travel future present past)))
+;; (defn- move-backward [past present future]
+;;   (reverse ; we reverse because time-travel always returns [from-time present to-time]
+;;    (time-travel future present past)))
 
 ;;;;;;; User API
 
@@ -106,9 +111,11 @@
   (save-current (@paths data))
   data)
 
-(defn backward [data])
+(defn backward [data]
+  (time-travel the-future data the-past))
 
-(defn forward [data])
+(defn forward [data]
+  (time-travel the-past data the-future))
 
 (defn root [data])
 
