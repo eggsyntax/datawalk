@@ -51,7 +51,8 @@
 
 (defn initialize [d]
   (w/reset-data! d)
-  (reset! w/paths {})
+  ;; Start with (empty) path to root
+  (reset! w/paths {d []})
   (reset! w/saved {})
   (reset! w/the-past {})
   (reset! w/the-future {})
