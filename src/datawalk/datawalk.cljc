@@ -10,6 +10,9 @@
 ;; We track current data,
 (def data (atom nil))
 
+;; the root / starting-point
+(def the-root (atom nil))
+
 ;; the paths from root to each visited node (we save them all so we can
 ;; know the correct path when we time travel),
 (def paths (atom {}))
@@ -37,22 +40,18 @@
 (defn- time-travel [from-time present to-time]
   (if (seq @to-time)
     (let [new-present (peek @to-time)]
-      (prn "new-present:" new-present)
       (swap! from-time conj present)
       (swap! to-time pop)
       new-present)
     ;; [(conj from-time present) (peek to-time) (pop to-time)]
     (do (println "You have reached the end of time. You shall go no further.\n")
-        [from-time present to-time])))
+        present)))
 
 ;;;;;;; High-level helpers
 
 (defn save [item]
   (let [next-index (count @saved)]
     (swap! saved (assoc next-index item))))
-
-(defn reset-data! [d]
-  (reset! data d))
 
 ;; (defn- move-forward [past present future]
 ;;   (time-travel past present future))
@@ -117,7 +116,8 @@
 (defn forward [data]
   (time-travel the-past data the-future))
 
-(defn root [data])
+(defn root [data]
+  @root)
 
 ;; TODO maybe?
 (defn up [data])
@@ -149,10 +149,3 @@
   data)
 
 (defn function [data])
-
-
-;; Dev helpers
-(defn init []
-  (do (reset-data! {:a 1 :b {:c 2 :d 3}})
-      (reset! paths {})
-      (reset! saved {})))

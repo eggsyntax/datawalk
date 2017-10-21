@@ -2,7 +2,7 @@
   (:require [datawalk.datawalk :as w]
             [datawalk.print    :as pr]
             [datawalk.parse    :as ps]
-            #_[clojure.string :as string]
+            [clojure.string :as string]
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt]
             ))
@@ -30,11 +30,12 @@
 ;;   Empirically, this seems to be true, although I wouldn't necessarily trust
 ;;   it in production code.
 ;; - AFAICT, special fns are generally defined by the repl, so it
-;;   may not be possible to inject them for my own needs.
+;;   may not be possible to inject them for my own needs unless I create
+;;   my own repl.
 ;;   - see https://github.com/bhauman/lein-figwheel/blob/bddbcc0fe326ea1e4aafb649a0b95c9113377611/sidecar/src/figwheel_sidecar/system.clj
 ;; - Other options:
 ;;   - I could just make a totally ordinary fn and make users use that at the
-;;   repl -- ie just print it out, and then do
+;;   cljs repl -- ie just print it out, and then do
 ;;   user> (x b) ; backward
 ;;   user> (x 3) ; drill to item 3
 ;;   ...and so on.
@@ -48,10 +49,12 @@
 
 (def exit-command? #{w/exit w/exit-with-current})
 
+(def time-travel-command? #{w/backward w/forward})
+
 (defn initialize [d]
-  (w/reset-data! d)
-  ;; Start with (empty) path to root
-  (reset! w/paths {d []})
+  (reset! w/data d)
+  (reset! w/the-root d)
+  (reset! w/paths {d []}) ; Start with (empty) path to root
   (reset! w/saved {})
   (reset! w/the-past [])
   (reset! w/the-future [])
@@ -74,8 +77,10 @@
   (println "Exploring.\n")
   (initialize d)
   (loop [data d]
-    (println "past:   " @w/the-past)
-    (println "future: " @w/the-future)
+    (println "past:\n" (string/join "\n " @w/the-past))
+    (println "future:\n" (string/join "\n " @w/the-future))
+    ;; (println "past:   " @w/the-past)
+    ;; (println "future: " @w/the-future)
     (println)
     (pr/print-data data)
     (print prompt)
@@ -83,10 +88,11 @@
           f (ps/parse in)
           result (if f (f data) data)]
       ;; Maybe I don't even need to store it, although users might like that
-      ;; (w/reset-data! result)
+      ;; (reset! w/data result)
       (if (exit-command? f)
         result
-        (do (swap! w/the-past conj result)
+        (do (when-not (time-travel-command? f)
+              (swap! w/the-past conj data))
             (recur result)))
       )))
 
