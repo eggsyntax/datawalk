@@ -96,9 +96,15 @@
 (defn exit-with-current [data]
   data)
 
-(defn save-current [data])
+(defn save-current [data]
+  ;; saved is a map containing numeric indices (for easy retrieval) & arbitrary
+  ;; items
+  (let [next-index (count @saved)]
+    (swap! saved assoc next-index data)))
 
-(defn save-path [data])
+(defn save-path [data]
+  (save-current (@paths data))
+  data)
 
 (defn backward [data])
 
@@ -111,7 +117,10 @@
 
 (defn print-help [data])
 
-(defn print-path [data])
+(defn print-path [data]
+  (println "PATH:" (@paths data))
+  (println)
+  data)
 
 (defn function [data])
 

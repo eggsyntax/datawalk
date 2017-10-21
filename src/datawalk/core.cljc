@@ -40,13 +40,14 @@
 ;;   ...and so on.
 ;;   - I could make users run in a specific env, eg planck or node. Unfortunately,
 ;;     reading input seems to be wildly inconsistent across browsers (eg
-;;     SpiderMonkey has read-line), so I couldn't even make something that
+;;     SpiderMonkey has `read-line`), so I couldn't even make something that
 ;;     worked in all browser repls :(
 ;;   - I could make users copy-paste over into clj :(
 
 
+;; TODO switch to `prevents-recur?`? There are fewer.
 (def causes-recur?
-  #{'w/save-current 'w/save-path 'w/backward 'w/forward 'w/root 'w/up})
+  #{w/save-current w/save-path w/backward w/forward w/root w/up w/print-help w/print-path})
 
 (defn initialize [d]
   (w/reset-data! d)
@@ -65,18 +66,20 @@
 
 (defn datawalk
   "Runs a small, self-contained REPL for exploring data."
+  ;; Technically a PREL
   [d]
   (println "Exploring.\n")
   (initialize d)
-  (pr/print-data d)
   (loop [data @w/data]
+    (pr/print-data data)
     (print ".dw.> ")
     (let [in (read-input)
           f (ps/parse in)
+          _ (def gg f)
+          _ (prn "f:" f "; causes-recur?" (causes-recur? f))
           result (if f (f data) data)]
       ;; Maybe I don't even need to store it, although users might like that
       ;; (w/reset-data! result)
-      (pr/print-data result)
       (if (or (ps/read-int in) ; it's a #, ie a drill command
               (causes-recur? f))
         ;; (do (prn "recurring")
@@ -87,5 +90,5 @@
 
 (comment
 
-  (datawalk {:a 1 :b {:c 2 :d 3}})
+  (datawalk {:a 1 :b {:c #{2 3 4} :d 5 :e [6 7 {:f 8 :g {:h 9}}]}})
   )
