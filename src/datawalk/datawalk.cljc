@@ -14,8 +14,14 @@
 ;; know the correct path when we time travel),
 (def paths (atom {}))
 
-;; and a map of values to return on exit.
+;; a map of values to return on exit,
 (def saved (atom {}))
+
+;; the past (visited nodes),
+(def past (atom []))
+
+;; and the future.
+(def future (atom []))
 
 ;; Throughout: d = data
 
@@ -23,6 +29,16 @@
 
 (defn- not-set [x]
   (if (set? x) (vec x) x))
+
+;; The past and the future are both stacks; to move backward or forward, we pop
+;; something off one stack, push current data onto the other, and return the
+;; popped value as the new present
+;; from & to are past & future in some order
+(defn- time-travel [from-time present to-time]
+  (if (seq to-time)
+    [(conj from-time present) (peek to-time) (pop to-time)]
+    (do (println "You have reached the end of time. You shall go no further.\n")
+        [from-time present to-time])))
 
 ;;;;;;; High-level helpers
 
@@ -33,7 +49,18 @@
 (defn reset-data! [d]
   (reset! data d))
 
+(defn- move-forward [past present future]
+  (time-travel past present future))
+
+(defn- move-backward [past present future]
+  (reverse ; we reverse because time-travel always returns [from-time present to-time]
+   (time-travel future present past)))
+
 ;;;;;;; User API
+
+;; All API fns take data as their final argument, and return
+;; updated data. Changes to the paths or saved atoms are made
+;; inline as side effects.
 
 (defn no-op [data]
   data)
