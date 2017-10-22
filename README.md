@@ -34,6 +34,7 @@ structures. I hope you find it as useful as I have :)
 
 ## Usage summary:
 
+```
 numbers: Enter any number to jump to the corresponding item
 q :exit ; exit and return saved values if any
 x :exit-with-current ; exit & return just this value
@@ -46,6 +47,7 @@ u :up ; step upward [provides list of referring entities]
 h :help ; print help & return same ent
 p :print-path ; path: print path to current item.
 ! :function ; call an arbitrary 1-arg fn on data, jump to result
+```
 
 # Configuration
 
@@ -53,15 +55,15 @@ datawalk.print contains several dynamic vars which you can rebind anywhere
 to change the behavior of datawalk. These vars all affect the representation
 of the current data structure, not the underlying behavior.
 
-*max-items*: the top level of your data structure may be a sequence with
+\*max-items\*: the top level of your data structure may be a sequence with
   hundreds or thousands of items; you probably don't want to print them all.
   Defaults to 30.
 
-*max-line-length*: on each printed line, datawalk attempts to represent the
+\*max-line-length\*: on each printed line, datawalk attempts to represent the
   entire contents of the data on that line. This can sometimes be enormously
   long. You may wish to tune it to match the width of your repl environment.
 
-*max-key-length*: when displaying maps, the keys may be so long that they
+\*max-key-length\*: when displaying maps, the keys may be so long that they
   take up most of the space defined by *max-line-length*. This is most often
   true with namespaced keys. *max-key-length* limits the space taken up by
   the keys, in order to be sure to leave room for the values. When keys must
