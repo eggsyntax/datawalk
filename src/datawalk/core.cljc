@@ -78,23 +78,7 @@
     (println input)
     input))
 
-;; I'd like to
-;; - change datawalk to non-recurring / non-input-getting
-;;   - calling it by itself initializes data and then returns
-;; - create `repl` fn that just calls `datawalk` and then loops & gets input
-;; - create `ww` macro that parses its args as a command (as though the args
-;;   were user input), executes the command (changing the various states) and
-;;   returns, so that user (eg in cljs) can step through the data repeatedly
-;;   like:
-;;   [datawalk] > (datawalk my-data)
-;;   [datawalk] > (ww 2) ; drill to item 2
-;;   [datawalk] > (ww p) ; print path
-;;   [datawalk] > (ww b) ; step backward
-
 (defn datawalk
-  ;; parse inp
-  ;; eval
-  ;; print
   "Run a single step of exploration. Inner fn called by both `repl` and `ww`.
   Takes a data structure to act on, and input to parse and act on."
   [data in]
@@ -104,7 +88,7 @@
     ;; We store data in an atom only so that it can be referred
     ;; to elsewhere; we don't need it in this fn.
     (reset! w/data next-data)
-    (pr/print-data data)
+    (pr/print-data next-data)
     (if (exit-command? f)
       ;; TODO - control what's output. Could potentially bypass datawalk entirely
       ;; & just handle in repl, since the exit commands aren't really relevant
@@ -116,20 +100,22 @@
             (reset! w/the-future []))
           next-data))))
 
+;; datawalk essentially has two versions, a fully-interactive version which
+;; (currently) only runs in Clojure, and a semi-interactive version which runs
+;; anywhere. See README for more details. In short, `repl` is the fully-
+;; interactive version, and `look-at` + `ww` is the semi-interactive.
+
 (defn repl
   "Runs a small, self-contained, fully-interactive REPL for exploring data
   (Clojure-only for the moment)."
-  ;; initialize
-  ;; loop:
-  ;;   read-input
-  ;;   -> datawalk
   [d]
   (println "Exploring interactively.\n")
   (initialize d)
   (pr/print-data d)
   (loop [data d]
-    (print prompt)
     (when pr/*debug-mode* (print-globals))
+    (print prompt)
+    (flush) ; no-op in cljs
     (let [in (read-input)
           next-data (datawalk data in)]
       (if (= :exit next-data)
@@ -144,11 +130,19 @@
   (initialize d)
   (pr/print-data d))
 
-(defmacro ww [& args]
-  ;; parse args as input
-  ;; -> datawalk
-  ;; NO loop
-  )
+(defmacro ww
+  "Take a single step through the data, using any of the commands. For example,
+  [datawalk] > (ww 2) ; drill to item 2
+  [datawalk] > (ww p) ; print path
+  [datawalk] > (ww b) ; step backward
+  Use (ww h) to get a summary of available commands. ww presumes you've already
+  called `look-at` once to specify what data is being explored."
+  [& args]
+  (let [string-args (mapv str args)]
+    `(let [data @w/data]
+       (if data
+         (datawalk ~@string-args)
+         (println "No data to explore. Perhaps you haven't called look-at?")))))
 
 (comment
   (datawalk {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})

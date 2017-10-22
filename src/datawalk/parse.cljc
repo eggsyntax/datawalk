@@ -9,6 +9,7 @@
      :cljs (let [n (js/parseInt s)]
              (if (number? n) n nil))))
 
+;; TODO maybe add print-globals command?
 (def cmd-map
   {"q" w/exit ; exit, returning map of return values
    "x" w/exit-with-current ; exit & return just this ent
