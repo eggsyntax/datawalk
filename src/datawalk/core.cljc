@@ -78,34 +78,6 @@
     (println input)
     input))
 
-(defn datawalk
-  "Runs a small, self-contained REPL for exploring data."
-  ;; Technically a PREL
-  [d]
-  (println "Exploring.\n")
-  (initialize d)
-  (loop [data d]
-    ;; (println "past:\n" (string/join "\n " @w/the-past))
-    ;; (println "future:\n" (string/join "\n " @w/the-future))
-    ;; (println)
-    (when pr/*debug-mode* (print-globals))
-    (pr/print-data data)
-    (print prompt)
-    (let [in (read-input)
-          f (ps/parse in)
-          next-data (if f (f data) data)]
-      ;; We store data in an atom only so that it can be referred
-      ;; to outside this fn.
-      (reset! w/data next-data)
-      (if (exit-command? f)
-        next-data
-        (do (when (and (or (ps/read-int in) (time-stepping? f))
-                       (not= data next-data)) ; complicaton from various edge cases
-              (swap! w/the-past conj data)
-              (reset! w/the-future []))
-            (recur next-data))
-        ))))
-
 ;; I'd like to
 ;; - change datawalk to non-recurring / non-input-getting
 ;;   - calling it by itself initializes data and then returns
@@ -119,7 +91,64 @@
 ;;   [datawalk] > (ww p) ; print path
 ;;   [datawalk] > (ww b) ; step backward
 
-(defmacro ww [& args])
+(defn datawalk
+  ;; parse inp
+  ;; eval
+  ;; print
+  "Run a single step of exploration. Inner fn called by both `repl` and `ww`.
+  Takes a data structure to act on, and input to parse and act on."
+  [data in]
+  (when pr/*debug-mode* (print-globals))
+  (let [f (ps/parse in)
+        next-data (if f (f data) data)]
+    ;; We store data in an atom only so that it can be referred
+    ;; to elsewhere; we don't need it in this fn.
+    (reset! w/data next-data)
+    (pr/print-data data)
+    (if (exit-command? f)
+      ;; TODO - control what's output. Could potentially bypass datawalk entirely
+      ;; & just handle in repl, since the exit commands aren't really relevant
+      ;; except in the true repl
+      :exit ; used as signal to stop looping
+      (do (when (and (or (ps/read-int in) (time-stepping? f))
+                     (not= data next-data)) ; complicaton from various edge cases
+            (swap! w/the-past conj data)
+            (reset! w/the-future []))
+          next-data))))
+
+(defn repl
+  "Runs a small, self-contained, fully-interactive REPL for exploring data
+  (Clojure-only for the moment)."
+  ;; initialize
+  ;; loop:
+  ;;   read-input
+  ;;   -> datawalk
+  [d]
+  (println "Exploring interactively.\n")
+  (initialize d)
+  (pr/print-data d)
+  (loop [data d]
+    (print prompt)
+    (when pr/*debug-mode* (print-globals))
+    (let [in (read-input)
+          next-data (datawalk data in)]
+      (if (= :exit next-data)
+        next-data ; TODO
+        (recur next-data)))))
+
+(defn look-at
+  "Initializes the semi-interactive version. Typically you should call look-at
+  once, and then ww many times."
+  [d]
+  (println "Exploring semi-interactively.\n")
+  (initialize d)
+  (pr/print-data d))
+
+(defmacro ww [& args]
+  ;; parse args as input
+  ;; -> datawalk
+  ;; NO loop
+  )
 
 (comment
   (datawalk {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
