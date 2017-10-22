@@ -7,7 +7,7 @@
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt]
             )
-  #?(:cljs (:require-macros [datawalk.core :refer [ww]])))
+  #?(:cljs (:require-macros [datawalk.core :refer [w]])))
 
 ;; Dependency tree
 ;; core
@@ -78,7 +78,7 @@
     input))
 
 (defn datawalk
-  "Run a single step of exploration. Inner fn called by both `repl` and `ww`.
+  "Run a single step of exploration. Inner fn called by both `repl` and `w`.
   Takes a data structure to act on, and input to parse and act on."
   [data in]
   (when pr/*debug-mode* (print-globals))
@@ -102,7 +102,7 @@
 ;; datawalk essentially has two versions, a fully-interactive version which
 ;; (currently) only runs in Clojure, and a semi-interactive version which runs
 ;; anywhere. See README for more details. In short, `repl` is the fully-
-;; interactive version, and `look-at` + `ww` is the semi-interactive.
+;; interactive version, and `look-at` + `w` is the semi-interactive.
 
 #?(:clj
    (defn repl
@@ -124,20 +124,20 @@
 
 (defn look-at
   "Initializes the semi-interactive version. Typically you should call look-at
-  once, and then ww many times. Usable in all environments."
+  once, and then w many times. Usable in all environments."
   [d]
   (println "Exploring semi-interactively.
-Now that you've initialized the data, use ww to continue.
-(ww h) will give you a summary of available commands.\n")
+Now that you've initialized the data, use w to continue.
+(w h) will give you a summary of available commands.\n")
   (initialize d)
   (pr/print-data d))
 
-(defmacro ww
+(defmacro w
   "Take a single step through the data, using any of the commands. For example,
-  [datawalk] > (ww 2) ; drill to item 2
-  [datawalk] > (ww p) ; print path to current data
-  [datawalk] > (ww b) ; step backward
-  Use (ww h) to get a summary of available commands. ww presumes you've already
+  [datawalk] > (w 2) ; drill to item 2
+  [datawalk] > (w p) ; print path to current data
+  [datawalk] > (w b) ; step backward
+  Use (w h) to get a summary of available commands. w presumes you've already
   called `look-at` once to specify what data is being explored.
   Usable in all environments."
   [& args]
@@ -154,6 +154,6 @@ Now that you've initialized the data, use ww to continue.
 
   ;; semi-interactive
   (look-at {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
-  ;; followed by any number of calls to ww
+  ;; followed by any number of calls to w
 
   )
