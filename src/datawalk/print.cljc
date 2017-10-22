@@ -20,13 +20,25 @@
   [v]
   (if (string? v) (str "\"" v "\"") v))
 
-(defn- limit
+(defn- limit-left
   "Ensure that string s doesn't exceed n chars"
   [n s]
   (subs (str s) 0 (min n (count (str s)))))
 
-(defn- limitln [n s]
-  (str (limit n s) "\n"))
+(defn- limit-right
+  "Ensure that string s doesn't exceed n chars; chops from right"
+  [n s]
+  (let [s (str s)
+        slen (count s)
+        cutoff (min n slen)]
+    (subs s (- slen cutoff) slen)))
+
+(defn- limitln
+  ([n s]
+   (limitln n s true))
+  ([n s from-left?]
+   (let [limit (if from-left? limit-left limit-right)]
+     (str (limit n s) "\n"))))
 
 (defn to-string
   "Specialized pretty-printer for printing our sequences of things with numbers prepended"
@@ -54,7 +66,7 @@
                      (limitln *max-line-length*
                               (format format-s
                                       index
-                                      (limit *max-key-length* k)
+                                      (limit-right *max-key-length* k)
                                       (quote-strings v))))
                 (set? data)
                 , (limitln *max-line-length*
