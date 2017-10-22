@@ -1,26 +1,25 @@
 (ns datawalk.core
-  (:require [datawalk.datawalk :as w]
+  (:require [datawalk.datawalk :as dw]
             [datawalk.print    :as pr]
             [datawalk.parse    :as ps]
             [clojure.string :as string]
+            ;; Maybe later, for attempting read-line in cljs
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt]
             )
   #?(:cljs (:require-macros [datawalk.core :refer [ww]])))
 
-;; Dependencies:
+;; Dependency tree
 ;; core
-;;   datawalk (contains state)
-;;     util
-;;     print
+;;   datawalk (includes all state)
+;;     (print)
 ;;   parse
 ;;     (datawalk)
 ;;   print
 ;;     util
 
-
 ;; Notes:
-;; Throughout: d = data
+;; - Throughout: d = data
 ;; - Would use a customized clojure.main repl, but AFAIK it won't work w cljs.
 ;; - A key challenge for making this work in cljs is that generic user input
 ;;   isn't available in cljs. I brought it up in #clojurescript, and found the
@@ -34,9 +33,9 @@
 ;; - Assumption: the order of (keys m) will be consistent during a session.
 ;;   Empirically, this seems to be true, although I wouldn't necessarily trust
 ;;   it in production code.
-;; - AFAICT, special fns are generally defined by the repl, so it
-;;   may not be possible to inject them for my own needs unless I create
-;;   my own repl.
+;; - As far as I can tell, special fns are generally defined by the repl, so it
+;;   may not be possible to inject them for my own needs unless I create my own
+;;   repl.
 ;;   - see https://github.com/bhauman/lein-figwheel/blob/bddbcc0fe326ea1e4aafb649a0b95c9113377611/sidecar/src/figwheel_sidecar/system.clj
 ;; - Other options:
 ;;   - I could just make a totally ordinary fn and make users use that at the
@@ -52,21 +51,21 @@
 
 (def prompt "[datawalk] > ")
 
-(def ^:private exit-command? #{w/exit w/exit-with-current})
+(def ^:private exit-command? #{dw/exit dw/exit-with-current})
 
 ;; Commands (in addition to drill) which advance the time step
-(def ^:private time-stepping? #{w/root w/up w/function})
+(def ^:private time-stepping? #{dw/root dw/up dw/function})
 
 (defn initialize [d]
-  (reset! w/data d)
-  (reset! w/the-root d)
-  (reset! w/paths {d []}) ; Start with (empty) path to root
-  (reset! w/saved {})
-  (reset! w/the-past [])
-  (reset! w/the-future [])
+  (reset! dw/data d)
+  (reset! dw/the-root d)
+  (reset! dw/paths {d []}) ; Start with (empty) path to root
+  (reset! dw/saved {})
+  (reset! dw/the-past [])
+  (reset! dw/the-future [])
   )
 
-(defn print-globals [] (pr/print-globals  (@w/paths @w/data) @w/saved @w/the-past @w/the-future))
+(defn print-globals [] (pr/print-globals  (@dw/paths @dw/data) @dw/saved @dw/the-past @dw/the-future))
 
 (defn- read-input
   "Get user input (at repl) -- later this needs to be generalized for both clj
@@ -87,7 +86,7 @@
         next-data (if f (f data) data)]
     ;; We store data in an atom only so that it can be referred
     ;; to elsewhere; we don't need it in this fn.
-    (reset! w/data next-data)
+    (reset! dw/data next-data)
     (pr/print-data next-data)
     (if (exit-command? f)
       ;; TODO - control what's output. Could potentially bypass datawalk entirely
@@ -96,8 +95,8 @@
       :exit ; used as signal to stop looping
       (do (when (and (or (ps/read-int in) (time-stepping? f))
                      (not= data next-data)) ; complicaton from various edge cases
-            (swap! w/the-past conj data)
-            (reset! w/the-future []))
+            (swap! dw/the-past conj data)
+            (reset! dw/the-future []))
           next-data))))
 
 ;; datawalk essentially has two versions, a fully-interactive version which
@@ -125,7 +124,7 @@
 
 (defn look-at
   "Initializes the semi-interactive version. Typically you should call look-at
-  once, and then ww many times."
+  once, and then ww many times. Usable in all environments."
   [d]
   (println "Exploring semi-interactively.
 Now that you've initialized the data, use ww to continue.
@@ -139,11 +138,12 @@ Now that you've initialized the data, use ww to continue.
   [datawalk] > (ww p) ; print path to current data
   [datawalk] > (ww b) ; step backward
   Use (ww h) to get a summary of available commands. ww presumes you've already
-  called `look-at` once to specify what data is being explored."
+  called `look-at` once to specify what data is being explored.
+  Usable in all environments."
   [& args]
   (let [string-args (mapv str args)]
-    `(if @w/data
-      (datawalk @w/data ~@string-args)
+    `(if @dw/data
+      (datawalk @dw/data ~@string-args)
       (println "No data to explore. Perhaps you haven't called look-at?"))
     ))
 
