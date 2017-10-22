@@ -111,8 +111,8 @@
 (defn root [data]
   @the-root)
 
-;; TODO maybe?
-(defn up [data])
+(defn up [data]
+  (get-in @the-root (butlast (@paths data))))
 
 (def help-text
   {"#" "Enter any listed number to drill to that item"
