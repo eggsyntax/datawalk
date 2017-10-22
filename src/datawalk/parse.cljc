@@ -31,6 +31,7 @@
    "" nil ;
    })
 
+;; TODO handle case where > 1 arg, to support `(w ! my-fn)`
 (defn parse [inp]
   ;; (println "raw input: " inp)
   ;; If #: drill into that value
