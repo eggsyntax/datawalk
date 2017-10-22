@@ -89,24 +89,29 @@ problem. I'm hoping that at some point I'll manage to put together a truly
 agnostic solution (PRs welcome!).
 
 In the meantime, there's a semi-interactive solution that can be used in
-*all* REPLs, Clojure and ClojureScript, and some people may prefer it, since
-it keeps you in an ordinary REPL at all times. Its only downside is that you
-have to type a few more characters.
+*all* REPLs, Clojure and ClojureScript. Some people may actually prefer it,
+since it keeps you in an ordinary REPL at all times. Its only downside is that
+you have to type a few more characters.
 
 To use this solution (assuming you've referred datawalk.core/look-at and
 datawalk.core/w), start by calling
+
 `user> (look-at my-data-structure)`
+
 This initializes datawalk's internal state, so that it's always tracking a
 piece of current data. From there, call `(w *)`, where `*` represents any of
 the commands listed in the usage summary. So for example:
+
 `user> (w 2) ; drill down to item 2 in the numbered sequence`
 `user> (w b) ; step backward in time`
 `user> (w s) ; save the current data to the map of saved values`
 
 After each step, the current state will be stored in datawalk atoms and can
 be freely accessed:
+
 `datawalk.datawalk/data` stores the current data.
 `datawalk.datawalk/saved` holds the map of stored values.
+
 In the same ns, you can also access `the-root`, `the-past`, and `the-future`.
 
 Additionally, datawalk's built-in printing tools are available:
