@@ -35,6 +35,8 @@ structures. I hope you find it as useful as I have :)
 ## Usage summary:
 
 ```
+(datawalk my-data-structure) to start datawalking.
+
 numbers: Enter any number to jump to the corresponding item
 q :exit ; exit and return saved values if any
 x :exit-with-current ; exit & return just this value
@@ -70,6 +72,8 @@ of the current data structure, not the underlying behavior.
   be chopped, they're chopped from the right to try to capture the name
   rather than the namespace.
 
+\*debug-mode\*: when this is on, datawalk will print the values of the current
+  path, saved values, the-past, and the-future at each step.
 # ClojureScript
 
 ## License

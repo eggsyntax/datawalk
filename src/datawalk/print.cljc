@@ -6,6 +6,8 @@
 
 (def ^:dynamic *max-key-length* 16)
 
+(def ^:dynamic *debug-mode* false)
+
 (defn- longest-length
   "Return the length of the longest (in # of chars) item in the coll"
   [coll]
@@ -76,6 +78,18 @@
             (take *max-items* data))
         :else ; unhandled singular type
         ,   (str " 00. " data)))
+
+(defn to-debug-string [x]
+  (if (and (seqable? x) (not (string? x)))
+    (map (partial limitln *max-line-length*) x)
+    (limitln *max-line-length* x)))
+
+(defn print-debug-info [path saved the-past the-future]
+  (println "PATH:\n" (to-debug-string path))
+  (println "SAVED:\n" (to-debug-string saved))
+  (println "THE-PAST:\n" (to-debug-string the-past))
+  (println "THE-FUTURE:\n" (to-debug-string the-future))
+  (println))
 
 (defn print-data [data]
   (println (to-string data)))

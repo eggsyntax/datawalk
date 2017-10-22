@@ -5,7 +5,8 @@
             [clojure.string :as string]
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt]
-            ))
+            )
+  #?(:cljs (:require-macros [datawalk.core :refer [step]])))
 
 ;; Dependencies:
 ;; core
@@ -53,7 +54,8 @@
 
 (def exit-command? #{w/exit w/exit-with-current})
 
-(def time-travel-command? #{w/backward w/forward})
+;; Commands (in addition to drill) which advance the time step
+(def time-stepping? #{w/root w/up w/function})
 
 (defn initialize [d]
   (reset! w/data d)
@@ -84,6 +86,8 @@
     ;; (println "past:\n" (string/join "\n " @w/the-past))
     ;; (println "future:\n" (string/join "\n " @w/the-future))
     ;; (println)
+    (when pr/*debug-mode*
+      (pr/print-debug-info (@w/paths data) @w/saved @w/the-past @w/the-future))
     (pr/print-data data)
     (print prompt)
     (let [in (read-input)
@@ -94,8 +98,9 @@
       (reset! w/data next-data)
       (if (exit-command? f)
         next-data
-        (do (when-not (time-travel-command? f)
-              (swap! w/the-past conj data))
+        (do (when (or (ps/read-int in) (time-stepping? f))
+              (swap! w/the-past conj data)
+              (reset! w/the-future []))
             (recur next-data))))))
 
 (comment

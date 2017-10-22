@@ -37,14 +37,13 @@
 ;; something off one stack, push current data onto the other, and return the
 ;; popped value as the new present.
 ;; `from-time` and `to-time` are the-past & the-future in some order. `present`
-;; is just the current data, which isn't yet part of the-past or the-future.
+;; is just the current data, which may not yet be part of the-past or the-future.
 (defn- time-travel [from-time present to-time]
   (if (seq @to-time)
     (let [new-present (peek @to-time)]
       (swap! from-time conj present)
       (swap! to-time pop)
       new-present)
-    ;; [(conj from-time present) (peek to-time) (pop to-time)]
     (do (println "You have reached the end of time. You shall go no further.\n")
         present)))
 
