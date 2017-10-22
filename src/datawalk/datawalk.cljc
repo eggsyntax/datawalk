@@ -98,7 +98,8 @@
   ;; saved is a map containing numeric indices (for easy retrieval) & arbitrary
   ;; items
   (let [next-index (count @saved)]
-    (swap! saved assoc next-index data)))
+    (swap! saved assoc next-index data)
+    data))
 
 (defn save-path [data]
   (save-current (@paths data))
@@ -117,6 +118,8 @@
   (get-in @the-root (butlast (@paths data))))
 
 (def help-text
+  ;; quit and exit-with-current are only relevant in the fully interactive
+  ;; repl version, but this is not actually enforced in any way.
   {"#" "Enter any listed number to drill to that item"
    "q" "exit ; exit and return saved values if any (repl-only)"
    "x" "exit-with-current ; exit & return just this ent (repl-only)"
@@ -145,7 +148,8 @@
 
 ;; TODO
 (defn print-saved [data]
-  (println "SAVED:\n" (map pr/limitln @saved))
+  (println "SAVED:\n" (map (partial pr/limitln pr/*max-line-length*)
+                           @saved))
   (println)
   data)
 
