@@ -51,31 +51,31 @@ p :print-path ; path: print path to current item.
 ! :function ; call an arbitrary 1-arg fn on data, jump to result
 ```
 
-# Configuration
+## Configuration
 
 datawalk.print contains several dynamic vars which you can rebind anywhere
 to change the behavior of datawalk. These vars all affect the representation
 of the current data structure, not the underlying behavior.
 
-\*max-items\*: the top level of your data structure may be a sequence with
+`*max-items*`: the top level of your data structure may be a sequence with
   hundreds or thousands of items; you probably don't want to print them all.
   Defaults to 30.
 
-\*max-line-length\*: on each printed line, datawalk attempts to represent the
+`*max-line-length*`: on each printed line, datawalk attempts to represent the
   entire contents of the data on that line. This can sometimes be enormously
   long. You may wish to tune it to match the width of your repl environment.
 
-\*max-key-length\*: when displaying maps, the keys may be so long that they
+`*max-key-length*`: when displaying maps, the keys may be so long that they
   take up most of the space defined by *max-line-length*. This is most often
   true with namespaced keys. *max-key-length* limits the space taken up by
   the keys, in order to be sure to leave room for the values. When keys must
   be chopped, they're chopped from the right to try to capture the name
   rather than the namespace.
 
-\*debug-mode\*: when this is on, datawalk will print the values of the current
+`*debug-mode*`: when this is on, datawalk will print the values of the current
   path, saved values, the-past, and the-future at each step.
 
-# ClojureScript
+## ClojureScript
 
 ClojureScript presents a challenge: while you can trivially get user input in
 Clojure with `read-line`, ClojureScript has no way to do so (although some
@@ -117,12 +117,15 @@ be freely accessed:
 In the same ns, you can also access `the-root`, `the-past`, and `the-future`.
 
 Additionally, datawalk's built-in printing tools are available:
-`user> (w n)` prints the map of saved values.
-`user> (w p)` prints the path from the root to the current data.
+
+```
+user> (w n) prints the map of saved values.
+user> (w p) prints the path from the root to the current data.
+```
 
 ## License
 
-Copyright © 2017 FIXME
+Copyright © 2017 Jesse Davis (aka Egg Syntax)
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
