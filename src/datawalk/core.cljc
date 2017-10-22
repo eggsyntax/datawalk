@@ -56,7 +56,7 @@
 ;; Commands (in addition to drill) which advance the time step
 (def ^:private time-stepping? #{dw/root dw/up dw/function})
 
-(defn initialize [d]
+(defn initialize-state [d]
   (reset! dw/data d)
   (reset! dw/the-root d)
   (reset! dw/paths {d []}) ; Start with (empty) path to root
@@ -102,7 +102,9 @@
 ;; datawalk essentially has two versions, a fully-interactive version which
 ;; (currently) only runs in Clojure, and a semi-interactive version which runs
 ;; anywhere. See README for more details. In short, `repl` is the fully-
-;; interactive version, and `look-at` + `w` is the semi-interactive.
+;; interactive version, and `look-at` + `w` is the semi-interactive. Note that
+;; the two versions are equal in power; the only advantage of the fully-
+;; interactive version is that it requires typing fewer characters.
 
 #?(:clj
    (defn repl
@@ -110,7 +112,7 @@
   (Clojure-only for the moment)."
      [d]
      (println "Exploring interactively.\n")
-     (initialize d)
+     (initialize-state d)
      (pr/print-data d)
      (loop [data d]
        (when pr/*debug-mode* (print-globals))
@@ -129,7 +131,7 @@
   (println "Exploring semi-interactively.
 Now that you've initialized the data, use w to continue.
 (w h) will give you a summary of available commands.\n")
-  (initialize d)
+  (initialize-state d)
   (pr/print-data d))
 
 (defmacro w
