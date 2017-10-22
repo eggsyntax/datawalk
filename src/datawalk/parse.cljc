@@ -25,7 +25,7 @@
 
 (def cmd-map
   ;; Special commands get keywords; the rest are fns that will be called on the data
-  {"q" w/exit
+  {"q" w/exit ; exit, returning map of return values
    "x" w/exit-with-current ; exit & return just this ent
    "s" w/save-current ; save to map of return values
    "v" w/save-path ; save path to map of return values

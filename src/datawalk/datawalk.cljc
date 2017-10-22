@@ -3,6 +3,7 @@
   (:require
             ;; Temporary for dev:
             [datawalk.print :as pr]
+            [datawalk.util :as u]
             ))
 
 ;;;;;;; State:
@@ -26,18 +27,18 @@
 ;; and the future.
 (def the-future (atom []))
 
-;; Throughout: d = data
+;;;;;;; Helpers
 
-;;;;;;; Low-level helpers
-
-(defn- not-set [x]
-  (if (set? x) (vec x) x))
+(defn save [item]
+  (let [next-index (count @saved)]
+    (swap! saved (assoc next-index item))))
 
 ;; The past and the future are both stacks; to move backward or forward, we pop
 ;; something off one stack, push current data onto the other, and return the
 ;; popped value as the new present
 ;; from & to are past & future in some order
 (defn- time-travel [from-time present to-time]
+  (prn "u r here")
   (if (seq @to-time)
     (let [new-present (peek @to-time)]
       (swap! from-time conj present)
@@ -46,19 +47,6 @@
     ;; [(conj from-time present) (peek to-time) (pop to-time)]
     (do (println "You have reached the end of time. You shall go no further.\n")
         present)))
-
-;;;;;;; High-level helpers
-
-(defn save [item]
-  (let [next-index (count @saved)]
-    (swap! saved (assoc next-index item))))
-
-;; (defn- move-forward [past present future]
-;;   (time-travel past present future))
-
-;; (defn- move-backward [past present future]
-;;   (reverse ; we reverse because time-travel always returns [from-time present to-time]
-;;    (time-travel future present past)))
 
 ;;;;;;; User API
 
@@ -77,7 +65,12 @@
         , (let [next-data (nth data n)
                 ;; _ (println "conjing (in seq) onto" (type @paths))
                 next-path (conj (@paths data) n)]
-            (swap! paths assoc (not-set next-data) next-path)
+            (swap! paths assoc (u/not-set next-data) next-path)
+            next-data)
+        (set? data)
+        , (let [next-data (nth (u/not-set data) n)
+                next-path (conj (@paths data) n)]
+            (swap! paths assoc next-data next-path)
             next-data)
         (map? data)
         , (let [;_ (println "nonsequential data is a" (type data))
@@ -87,7 +80,7 @@
                 next-data (get data k)
                 next-path (conj (@paths data) k)]
             ;; (println "k:" k)
-            (swap! paths assoc (not-set next-data) next-path)
+            (swap! paths assoc (u/not-set next-data) next-path)
             next-data)
         :else ; not drillable; no-op
         , (do (println "Can't drill into a" (type data))
@@ -117,7 +110,7 @@
   (time-travel the-past data the-future))
 
 (defn root [data]
-  @root)
+  @the-root)
 
 ;; TODO maybe?
 (defn up [data])

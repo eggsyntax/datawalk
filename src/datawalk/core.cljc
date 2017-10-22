@@ -10,8 +10,12 @@
 ;; Dependencies:
 ;; core
 ;;   datawalk (contains state)
+;;     util
+;;     print
 ;;   parse
+;;     (datawalk)
 ;;   print
+;;     util
 
 
 ;; Notes:
@@ -77,11 +81,9 @@
   (println "Exploring.\n")
   (initialize d)
   (loop [data d]
-    (println "past:\n" (string/join "\n " @w/the-past))
-    (println "future:\n" (string/join "\n " @w/the-future))
-    ;; (println "past:   " @w/the-past)
-    ;; (println "future: " @w/the-future)
-    (println)
+    ;; (println "past:\n" (string/join "\n " @w/the-past))
+    ;; (println "future:\n" (string/join "\n " @w/the-future))
+    ;; (println)
     (pr/print-data data)
     (print prompt)
     (let [in (read-input)
