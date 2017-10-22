@@ -49,7 +49,7 @@
 ;;     worked in all browser repls :(
 ;;   - I could make users copy-paste over into clj :(
 
-(def prompt ".dw.> ")
+(def prompt "[datawalk] > ")
 
 (def exit-command? #{w/exit w/exit-with-current})
 
@@ -88,17 +88,17 @@
     (print prompt)
     (let [in (read-input)
           f (ps/parse in)
-          result (if f (f data) data)]
-      ;; Maybe I don't even need to store it, although users might like that
-      ;; (reset! w/data result)
+          next-data (if f (f data) data)]
+      ;; We store data in an atom only so that it can be referred
+      ;; to outside this fn.
+      (reset! w/data next-data)
       (if (exit-command? f)
-        result
+        next-data
         (do (when-not (time-travel-command? f)
               (swap! w/the-past conj data))
-            (recur result)))
-      )))
+            (recur next-data))))))
 
 (comment
+  (datawalk {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
 
-  (datawalk {:a 1 :b {:c #{2 3 4} :d 5 :e [6 7 {:f 8 :g {:h 9}}]}})
   )

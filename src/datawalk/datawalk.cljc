@@ -9,7 +9,7 @@
 ;;;;;;; State:
 
 ;; We track current data,
-(def data (atom nil))
+(def data (atom nil)) ; we don't rely on this except for non-interactive use
 
 ;; the root / starting-point
 (def the-root (atom nil))
@@ -35,10 +35,10 @@
 
 ;; The past and the future are both stacks; to move backward or forward, we pop
 ;; something off one stack, push current data onto the other, and return the
-;; popped value as the new present
-;; from & to are past & future in some order
+;; popped value as the new present.
+;; `from-time` and `to-time` are the-past & the-future in some order. `present`
+;; is just the current data, which isn't yet part of the-past or the-future.
 (defn- time-travel [from-time present to-time]
-  (prn "u r here")
   (if (seq @to-time)
     (let [new-present (peek @to-time)]
       (swap! from-time conj present)
@@ -50,9 +50,9 @@
 
 ;;;;;;; User API
 
-;; All API fns take data as their final argument, and return
-;; updated data. Changes to the paths, saved, the-past, and the-future atoms are
-;; made inline as side effects.
+;; All API fns take data as their final argument, and return updated data.
+;; Changes to paths, saved, the-past, and the-future atoms are made inline as
+;; side effects.
 
 (defn no-op [data]
   data)

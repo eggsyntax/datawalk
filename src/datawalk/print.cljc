@@ -1,5 +1,4 @@
-(ns datawalk.print
-  (:require [datawalk.util :as u]))
+(ns datawalk.print)
 
 (def ^:dynamic *max-items* 30)
 
@@ -7,8 +6,6 @@
 
 (def ^:dynamic *max-key-length* 16)
 
-;; TODO haven't really looked at this yet, it's just copied
-;; straight from harmonium.datomic.util.explore
 (defn- longest-length
   "Return the length of the longest (in # of chars) item in the coll"
   [coll]
@@ -43,9 +40,12 @@
 (defn to-string
   "Specialized pretty-printer for printing our sequences of things with numbers prepended"
   [data]
+  ;; TODO use cl-format to represent nil as "nil" instead of "null"?
+  ;;     It's oddly amusing to see it as "null" tho
+  ;;     https://clojuredocs.org/clojure.core/format
   ;; (println "data =" data)
   (cond (string? data) ; strings masquerade as seqs, so we handle separately
-        ,  (quote-strings data)
+        ,  (str " 00. " (quote-strings data))
         (seqable? data)
         ,  (map-indexed
             (fn [index item]
@@ -61,7 +61,7 @@
                          ;; _ (println "type =" (type item))
                          [k v] item
                          format-s (str "%02d. %"
-                                       (+ 2 (longest-length (keys data)))
+                                       (longest-length (keys data))
                                        "s: %s")]
                      (limitln *max-line-length*
                               (format format-s
@@ -69,16 +69,13 @@
                                       (limit-right *max-key-length* k)
                                       (quote-strings v))))
                 (set? data)
-                , (limitln *max-line-length*
+                ,  (limitln *max-line-length*
                          (format "%02d. %s" index (quote-strings item)))
-                ;; TODO this is redundant, right?
-                ;; (string? data)
-                ;; ,  data
                 :else
                 ,  (str "how should I print a" (type data) "?")))
             (take *max-items* data))
         :else ; unhandled singular type
-        ,   (str data)))
+        ,   (str " 00. " data)))
 
 (defn print-data [data]
   (println (to-string data)))
