@@ -6,7 +6,7 @@
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt]
             )
-  #?(:cljs (:require-macros [datawalk.core :refer [step]])))
+  #?(:cljs (:require-macros [datawalk.core :refer [ww]])))
 
 ;; Dependencies:
 ;; core
@@ -52,10 +52,10 @@
 
 (def prompt "[datawalk] > ")
 
-(def exit-command? #{w/exit w/exit-with-current})
+(def ^:private exit-command? #{w/exit w/exit-with-current})
 
 ;; Commands (in addition to drill) which advance the time step
-(def time-stepping? #{w/root w/up w/function})
+(def ^:private time-stepping? #{w/root w/up w/function})
 
 (defn initialize [d]
   (reset! w/data d)
@@ -66,13 +66,15 @@
   (reset! w/the-future [])
   )
 
-(defn read-input
-  ;; TODO
+(defn print-globals [] (pr/print-globals  (@w/paths @w/data) @w/saved @w/the-past @w/the-future))
+
+(defn- read-input
   "Get user input (at repl) -- later this needs to be generalized for both clj
   and the various cljs environments."
   []
   (flush)
-  (let [input (read-line)]
+  (let [input #?(:clj (read-line)
+                 :cljs nil)] ; TODO (see cljs section of README)
     (println input)
     input))
 
@@ -86,8 +88,7 @@
     ;; (println "past:\n" (string/join "\n " @w/the-past))
     ;; (println "future:\n" (string/join "\n " @w/the-future))
     ;; (println)
-    (when pr/*debug-mode*
-      (pr/print-debug-info (@w/paths data) @w/saved @w/the-past @w/the-future))
+    (when pr/*debug-mode* (print-globals))
     (pr/print-data data)
     (print prompt)
     (let [in (read-input)
@@ -98,10 +99,27 @@
       (reset! w/data next-data)
       (if (exit-command? f)
         next-data
-        (do (when (or (ps/read-int in) (time-stepping? f))
+        (do (when (and (or (ps/read-int in) (time-stepping? f))
+                       (not= data next-data)) ; complicaton from various edge cases
               (swap! w/the-past conj data)
               (reset! w/the-future []))
-            (recur next-data))))))
+            (recur next-data))
+        ))))
+
+;; I'd like to
+;; - change datawalk to non-recurring / non-input-getting
+;;   - calling it by itself initializes data and then returns
+;; - create `repl` fn that just calls `datawalk` and then loops & gets input
+;; - create `ww` macro that parses its args as a command (as though the args
+;;   were user input), executes the command (changing the various states) and
+;;   returns, so that user (eg in cljs) can step through the data repeatedly
+;;   like:
+;;   [datawalk] > (datawalk my-data)
+;;   [datawalk] > (ww 2) ; drill to item 2
+;;   [datawalk] > (ww p) ; print path
+;;   [datawalk] > (ww b) ; step backward
+
+(defmacro ww [& args])
 
 (comment
   (datawalk {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})

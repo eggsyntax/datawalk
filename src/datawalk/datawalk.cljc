@@ -27,11 +27,12 @@
 ;; and the future.
 (def the-future (atom []))
 
-;;;;;;; Helpers
+;; (I originally wrote a small initial version of datawalk that passed all of
+;; these around at every recur step, differently for each (or most) operations.
+;; It works fine, but it's clumsier and less readable, so I'm happy to use a few
+;; namespaced globals for a small, self-contained project like this.)
 
-(defn save [item]
-  (let [next-index (count @saved)]
-    (swap! saved (assoc next-index item))))
+;;;;;;; Helpers
 
 ;; The past and the future are both stacks; to move backward or forward, we pop
 ;; something off one stack, push current data onto the other, and return the
@@ -83,6 +84,7 @@
             next-data)
         :else ; not drillable; no-op
         , (do (println "Can't drill into a" (type data))
+              (swap! the-past pop) ; we haven't moved; avoid dup
               data)))
 
 (defn exit [data]
@@ -126,6 +128,7 @@
    "u" "up ; step upward [provides list of referring entities]"
    "h" "help ; print help & return same ent"
    "p" "print-path ; path: print path to current item."
+   "n" "print-saved ; print data saved so far"
    "!" "function ; call an arbitrary 1-arg fn on data, jump to result"
    })
 
@@ -140,4 +143,11 @@
   (println)
   data)
 
+;; TODO
+(defn print-saved [data]
+  (println "SAVED:\n" (map pr/limitln @saved))
+  (println)
+  data)
+
+;; TODO implement
 (defn function [data])

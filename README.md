@@ -74,7 +74,25 @@ of the current data structure, not the underlying behavior.
 
 \*debug-mode\*: when this is on, datawalk will print the values of the current
   path, saved values, the-past, and the-future at each step.
+
 # ClojureScript
+
+ClojureScript presents a challenge: while you can trivially get user input in
+Clojure with `read-line`, ClojureScript has no way to do so (although some
+specific cljs repls like planck add that functionality themselves). Because of
+this issue, it's very difficult to create a true interactive program as
+described above.
+
+I've had some interesting discussions about it, and @mfikes kindly pointed to
+his abio library (https://github.com/abiocljs) which begins to address the
+problem. I'm hoping that at some point I'll manage to put together a truly
+agnostic solution (PRs welcome!).
+
+In the meantime, there's a semi-interactive solution that can be used in
+*all* REPLs, Clojure and ClojureScript.
+
+;; TODO describe.
+;; Mention [n] for print-saved
 
 ## License
 

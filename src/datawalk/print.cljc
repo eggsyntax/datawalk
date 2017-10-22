@@ -32,7 +32,7 @@
         cutoff (min n slen)]
     (subs s (- slen cutoff) slen)))
 
-(defn- limitln
+(defn limitln
   ([n s]
    (limitln n s true))
   ([n s from-left?]
@@ -84,7 +84,7 @@
     (map (partial limitln *max-line-length*) x)
     (limitln *max-line-length* x)))
 
-(defn print-debug-info [path saved the-past the-future]
+(defn print-globals [path saved the-past the-future]
   (println "PATH:\n" (to-debug-string path))
   (println "SAVED:\n" (to-debug-string saved))
   (println "THE-PAST:\n" (to-debug-string the-past))

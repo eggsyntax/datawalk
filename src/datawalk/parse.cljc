@@ -19,7 +19,8 @@
    "r" w/root ; jump back to root
    "u" w/up ; step upward [provides list of referring entities]
    "h" w/print-help ; print help & return same ent
-   "p" w/print-path ; path: print path to current item.
+   "p" w/print-path ; print path to current item.
+   "n" w/print-saved ; print data saved so far
    "!" w/function ; call an arbitrary 1-arg fn on data, jump to result
    "?" w/print-help
    ;; Not yet written:
