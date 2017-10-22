@@ -105,46 +105,55 @@
 ;; anywhere. See README for more details. In short, `repl` is the fully-
 ;; interactive version, and `look-at` + `ww` is the semi-interactive.
 
-(defn repl
-  "Runs a small, self-contained, fully-interactive REPL for exploring data
+#?(:clj
+   (defn repl
+     "Runs a small, self-contained, fully-interactive REPL for exploring data
   (Clojure-only for the moment)."
-  [d]
-  (println "Exploring interactively.\n")
-  (initialize d)
-  (pr/print-data d)
-  (loop [data d]
-    (when pr/*debug-mode* (print-globals))
-    (print prompt)
-    (flush) ; no-op in cljs
-    (let [in (read-input)
-          next-data (datawalk data in)]
-      (if (= :exit next-data)
-        next-data ; TODO
-        (recur next-data)))))
+     [d]
+     (println "Exploring interactively.\n")
+     (initialize d)
+     (pr/print-data d)
+     (loop [data d]
+       (when pr/*debug-mode* (print-globals))
+       (print prompt)
+       (flush) ; no-op in cljs
+       (let [in (read-input)
+             next-data (datawalk data in)]
+         (if (= :exit next-data)
+           next-data ; TODO
+           (recur next-data))))))
 
 (defn look-at
   "Initializes the semi-interactive version. Typically you should call look-at
   once, and then ww many times."
   [d]
-  (println "Exploring semi-interactively.\n")
+  (println "Exploring semi-interactively.
+Now that you've initialized the data, use ww to continue.
+(ww h) will give you a summary of available commands.\n")
   (initialize d)
   (pr/print-data d))
 
 (defmacro ww
   "Take a single step through the data, using any of the commands. For example,
   [datawalk] > (ww 2) ; drill to item 2
-  [datawalk] > (ww p) ; print path
+  [datawalk] > (ww p) ; print path to current data
   [datawalk] > (ww b) ; step backward
   Use (ww h) to get a summary of available commands. ww presumes you've already
   called `look-at` once to specify what data is being explored."
   [& args]
   (let [string-args (mapv str args)]
-    `(let [data @w/data]
-       (if data
-         (datawalk ~@string-args)
-         (println "No data to explore. Perhaps you haven't called look-at?")))))
+    `(if @w/data
+      (datawalk @w/data ~@string-args)
+      (println "No data to explore. Perhaps you haven't called look-at?"))
+    ))
+
 
 (comment
-  (datawalk {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
+  ;; fully-interactive
+  (repl {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
+
+  ;; semi-interactive
+  (look-at {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
+  ;; followed by any number of calls to ww
 
   )
