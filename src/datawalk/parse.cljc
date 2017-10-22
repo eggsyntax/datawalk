@@ -1,6 +1,6 @@
 (ns datawalk.parse
   "Parses user input into a call to a fn in datawalk.datawalk"
-  (:require [datawalk.datawalk :as w]))
+  (:require [datawalk.datawalk :as dw]))
 
 
 (defn read-int [s]
@@ -11,24 +11,22 @@
 
 ;; TODO maybe add print-globals command?
 (def cmd-map
-  {"q" w/exit ; exit, returning map of return values
-   "x" w/exit-with-current ; exit & return just this ent
-   "s" w/save-current ; save to map of return values
-   "v" w/save-path ; save path to map of return values
-   "b" w/backward ; step backward in history
-   "f" w/forward ; step forward in history
-   "r" w/root ; jump back to root
-   "u" w/up ; step upward [provides list of referring entities]
-   "h" w/print-help ; print help & return same ent
-   "p" w/print-path ; print path to current item.
-   "n" w/print-saved ; print data saved so far
-   "!" w/function ; call an arbitrary 1-arg fn on data, jump to result
-   "?" w/print-help
-   ;; Not yet written:
+  {"q" dw/quit              ; exit and return saved values if any
+   "x" dw/exit-with-current ; exit & return just this value
+   "s" dw/save-current      ; save to map of return values
+   "v" dw/save-path         ; save path to map of return values
+   "b" dw/backward          ; step backward in history
+   "f" dw/forward           ; step forward in history
+   "r" dw/root              ; jump back to original root
+   "u" dw/up                ; step upward [provides list of referring entities]
+   "h" dw/help              ; print help & return same ent
+   "p" dw/print-path        ; print path from root to current item.
+   "n" dw/print-saved       ; print the map of saved data
+   "!" dw/function          ; call an arbitrary 1-arg fn on data, jump to result
+   ;;; Not yet written:
    "t" nil ; type: print the type of the current item
-   ;; possibles: map and filter cmds, similar to function cmd.
-   ;; all others become no-op
-   "" nil ;
+   ;;; possibles: map and filter cmds, similar to function cmd.
+   "" nil ; all others become no-op
    })
 
 ;; TODO handle case where > 1 arg, to support `(w ! my-fn)`
@@ -36,8 +34,8 @@
   ;; (println "raw input: " inp)
   ;; If #: drill into that value
   (if-let [n (read-int inp)]
-    (partial w/drill n)
+    (partial dw/drill n)
     ;; else: get fn to call on data
     (get cmd-map inp
          (fn [data] (do (println "Unknown command:" inp)
-                      (w/no-op data))))))
+                      (dw/no-op data))))))

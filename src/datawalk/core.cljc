@@ -118,11 +118,12 @@
        (when pr/*debug-mode* (print-globals))
        (print prompt)
        (flush) ; no-op in cljs
-       (let [in (read-input)
-             next-data (datawalk data in)]
-         (if (= :exit next-data)
-           next-data ; TODO
-           (recur next-data))))))
+       (let [in (read-input)]
+         (cond
+           (= "q" in) @dw/saved
+           (= "x" in) data
+           :else (recur (datawalk data in)))))))
+
 
 (defn look-at
   "Initializes the semi-interactive version. Typically you should call look-at

@@ -87,7 +87,7 @@
               (swap! the-past pop) ; we haven't moved; avoid dup
               data)))
 
-(defn exit [data]
+(defn quit [data]
   ;; Returns saved data
   @saved)
 
@@ -121,21 +121,21 @@
   ;; quit and exit-with-current are only relevant in the fully interactive
   ;; repl version, but this is not actually enforced in any way.
   {"#" "Enter any listed number to drill to that item"
-   "q" "exit ; exit and return saved values if any (repl-only)"
+   "q" "quit              ; exit and return saved values if any (repl-only)"
    "x" "exit-with-current ; exit & return just this ent (repl-only)"
-   "s" "save-current ; save to map of return values"
-   "v" "save-path ; save path to map of return values"
-   "b" "backward ; step backward in history"
-   "f" "forward ; step forward in history"
-   "r" "root ; jump back to root"
-   "u" "up ; step upward [provides list of referring entities]"
-   "h" "print help & return same ent"
-   "p" "print-path ; path: print path to current item."
-   "n" "print-saved ; print data saved so far"
+   "s" "save-current      ; save to map of return values"
+   "v" "save-path         ; save path to map of return values"
+   "b" "backward          ; step backward in history"
+   "f" "forward           ; step forward in history"
+   "r" "root              ; jump back to root"
+   "u" "up                ; step upward [provides list of referring entities]"
+   "h" "help              ; print help & return same ent"
+   "p" "print-path        ; path: print path to current item."
+   "n" "print-saved       ; print data saved so far"
    ;; "!" "function ; call an arbitrary 1-arg fn on data, jump to result"
    })
 
-(defn print-help [ent]
+(defn help [ent]
   (println "COMMANDS:")
   (run! println help-text)
   (println)
