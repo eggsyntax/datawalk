@@ -94,21 +94,25 @@
 (defn exit-with-current [data]
   data)
 
-(defn save-current
-  "Save the current data for later availability. @saved is a map containing
-  numeric indices (for easy retrieval) & arbitrary items. It's 1-indexed for
-  ease of keyboarding, and to serve as a reminder that this is not in some sense
-  not a 'natural' index but an arbitrarily constructed one (we could have just
-  as easily indexed by a, b, c...). "
+(defn- save-to-saved-map
   [data]
-  (println "Saving current data to saved-data map")
   (let [next-index (+ 1 (count @saved))]
     (swap! saved assoc next-index data)
     data))
 
+(defn save-current
+  "Save the current data for later availability. @saved is a map containing
+  numeric indices (for easy retrieval) & arbitrary items. It's 1-indexed for
+  ease of keyboarding, and to serve as a reminder that this is in some sense not
+  a 'natural' index but an arbitrarily constructed one (eg we could have just as
+  easily indexed by a, b, c...). "
+  [data]
+  (println "Saving current data to saved-data map")
+  (save-to-saved-map data))
+
 (defn save-path [data]
-  (println "Saving" (@paths data) "to saved-data map")
-  (save-current (@paths data))
+  (println "Saving the path to current to saved-data map")
+  (save-to-saved-map (@paths data))
   data)
 
 (defn backward [data]

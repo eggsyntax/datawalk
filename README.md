@@ -8,12 +8,11 @@ Provides a simple interactive data explorer.
 (datawalk.core/repl my-data-structure)
 ```
 
-In Clojure and ClojureScript, we spend a lot of time investigating and
-manipulating ordinary data structures, sometimes enormous ones. I've spent quite
-a lot of time at the REPL navigating through complex nested data structures,
-often heavily-nested maps with long namespaced keys. I prefer to minimize the
-amount of typing I have to do for repetitive tasks, and this is certainly one of
-those tasks.
+In Clojure and ClojureScript, we spend a lot of time exploring and manipulating
+data structures, sometimes enormous ones. I've whiled away innumerable hours at
+the REPL navigating through complex nested data structures, often heavily-nested
+maps with long namespaced keys. I prefer to minimize the amount of typing I have
+to do for repetitive tasks, and this is certainly one of those tasks.
 
 So datawalk pretty-prints the top level of your data structure, and then lets
 you drill down repeatedly, typically with just a single keystroke (the number
