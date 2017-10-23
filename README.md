@@ -41,7 +41,7 @@ data structures. I hope you find it as useful as I have.
 
 Leiningen:
 ```
-[datawalk "0.1.0-SNAPSHOT"]
+[datawalk "0.1.1-SNAPSHOT"]
 ```
 
 Details at https://clojars.org/datawalk
