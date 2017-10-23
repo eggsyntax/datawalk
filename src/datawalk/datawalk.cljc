@@ -94,10 +94,14 @@
 (defn exit-with-current [data]
   data)
 
-(defn save-current [data]
-  ;; saved is a map containing numeric indices (for easy retrieval) & arbitrary
-  ;; items
-  (let [next-index (count @saved)]
+(defn save-current
+  "Save the current data for later availability. @saved is a map containing
+  numeric indices (for easy retrieval) & arbitrary items. It's 1-indexed for
+  ease of keyboarding, and to serve as a reminder that this is not in some sense
+  not a 'natural' index but an arbitrarily constructed one (we could have just
+  as easily indexed by a, b, c...). "
+  [data]
+    (let [next-index (+ 1 (count @saved))]
     (swap! saved assoc next-index data)
     data))
 

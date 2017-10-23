@@ -51,7 +51,7 @@
 
 (def prompt "[datawalk] > ")
 
-(def ^:private exit-command? #{dw/exit dw/exit-with-current})
+(def ^:private exit-command? #{dw/quit dw/exit-with-current})
 
 ;; Commands (in addition to drill) which advance the time step
 (def ^:private time-stepping? #{dw/root dw/up dw/function})
