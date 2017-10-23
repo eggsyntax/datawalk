@@ -1,5 +1,7 @@
 # datawalk
 
+https://github.com/eggsyntax/datawalk
+
 Provides a simple interactive data explorer.
 
 ```
@@ -18,9 +20,9 @@ you drill down repeatedly, typically with just a single keystroke (the number
 representing the item's position in the printed list, as shown next to the
 item) plus enter.
 
-Often the reason drill down is to determine a path to pass to `get-in`, so
-datawalk will track and [p]rint the path from the original root to the level
-you're on.
+Often the reason for drilling down at the REPL is to determine a path to pass to
+`get-in`, so datawalk will track and [p]rint the path from the original root to
+the level you're on.
 
 At any point in this process, you can [s]ave the current item or sa[v]e the
 path (from root to item) into a map of saved items which will be returned when
@@ -29,12 +31,21 @@ you [q]uit. You can also e[x]it and return just the current item.
 You can also move [b]ackward or [f]orward in time, or move [u]p a level, or jump
 back to the original [r]oot.
 
-Finally, you can use [!] to call an arbitrary single-arg function on the current
-data (jumping to the result), and you can print [h]elp to get a reminder of
-these actions.
+Finally, you can use [!] (not yet implemented) to call an arbitrary single-arg
+function on the current data (jumping to the result), and you can print [h]elp
+to get a reminder of these actions.
 
-datawalk tries to do one thing well: eliminate tedium when navigating data
-structures. I hope you find it as useful as I have :)
+datawalk tries to do one thing well: eliminate tedium and typing when navigating
+data structures. I hope you find it as useful as I have.
+
+## Installation:
+
+Leiningen:
+```
+[datawalk "0.1.0-SNAPSHOT"]
+```
+
+Details at https://clojars.org/datawalk
 
 ## Usage summary:
 
@@ -52,8 +63,7 @@ r :root              ; jump back to original root
 u :up                ; step upward [provides list of referring entities]
 h :help              ; print help & return same ent
 p :print-path        ; print path from root to current item.
-n :print-saved       ; print the map of saved data
-! :function          ; call an arbitrary 1-arg fn on data, jump to result
+m :print-saved-map   ; print the map of saved data
 ```
 
 ## ClojureScript
@@ -74,8 +84,8 @@ In the meantime, there's a semi-interactive solution that can be used in
 since it keeps you in an ordinary REPL at all times. Its only downside is that
 you have to type a few more characters.
 
-To use this solution (assuming you've referred datawalk.core/look-at and
-datawalk.core/w), start by calling
+To use the semi-interactive version, let's assume you've referred
+datawalk.core/look-at and datawalk.core/w). Start by calling
 
 `user> (look-at my-data-structure)`
 
@@ -100,7 +110,7 @@ In the same ns, you can also access `the-root`, `the-past`, and `the-future`.
 Additionally, datawalk's built-in printing tools are available:
 
 ```
-user> (w n) prints the map of saved values.
+user> (w m) prints the map of saved values.
 user> (w p) prints the path from the root to the current data.
 ```
 

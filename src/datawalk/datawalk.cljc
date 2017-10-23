@@ -135,7 +135,7 @@
    "u" "up                ; step upward [provides list of referring entities]"
    "h" "help              ; print help & return same ent"
    "p" "print-path        ; path: print path to current item."
-   "n" "print-saved       ; print data saved so far"
+   "n" "print-saved-map   ; print data saved so far"
    ;; "!" "function ; call an arbitrary 1-arg fn on data, jump to result"
    })
 
@@ -150,8 +150,7 @@
   (println)
   data)
 
-;; TODO
-(defn print-saved [data]
+(defn print-saved-map [data]
   (println "SAVED:\n" (map (partial pr/limitln pr/*max-line-length*)
                            @saved))
   (println)
