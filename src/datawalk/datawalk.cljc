@@ -101,11 +101,13 @@
   not a 'natural' index but an arbitrarily constructed one (we could have just
   as easily indexed by a, b, c...). "
   [data]
-    (let [next-index (+ 1 (count @saved))]
+  (println "Saving current data to saved-data map")
+  (let [next-index (+ 1 (count @saved))]
     (swap! saved assoc next-index data)
     data))
 
 (defn save-path [data]
+  (println "Saving" (@paths data) "to saved-data map")
   (save-current (@paths data))
   data)
 
@@ -135,7 +137,7 @@
    "u" "up                ; step upward [provides list of referring entities]"
    "h" "help              ; print help & return same ent"
    "p" "print-path        ; path: print path to current item."
-   "n" "print-saved-map   ; print data saved so far"
+   "m" "print-saved-map   ; print data saved so far"
    ;; "!" "function ; call an arbitrary 1-arg fn on data, jump to result"
    })
 

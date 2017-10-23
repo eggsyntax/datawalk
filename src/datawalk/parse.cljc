@@ -21,7 +21,7 @@
    "u" dw/up                ; step upward [provides list of referring entities]
    "h" dw/help              ; print help & return same ent
    "p" dw/print-path        ; print path from root to current item.
-   "n" dw/print-saved-map   ; print the map of saved data
+   "m" dw/print-saved-map   ; print the map of saved data
    ;;; Not yet implemented:
    "!" dw/function          ; call an arbitrary 1-arg fn on data, jump to result
    "t" nil ; type: print the type of the current item
