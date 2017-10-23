@@ -154,9 +154,9 @@ Now that you've initialized the data, use w to continue.
   [& args]
   (let [string-args# (mapv str args)]
     `(if @dw/data
-       (datawalk @dw/data ~@string-args#)
-       (println "No data to explore. Perhaps you haven't called look-at?"))
-    nil))
+       (do (datawalk @dw/data ~@string-args#) ; updates state,
+           nil) ; ignore return val (so it's not printed again)
+       (println "No data to explore. Perhaps you haven't called look-at?"))))
 
 
 (comment
