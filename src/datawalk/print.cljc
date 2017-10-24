@@ -5,9 +5,9 @@
 
 (def ^:dynamic *max-items* 30)
 
-(def ^:dynamic *max-line-length* 80)
+(def ^:dynamic *max-line-length* 120)
 
-(def ^:dynamic *max-key-length* 16)
+(def ^:dynamic *max-key-length* 24)
 
 (def ^:dynamic *debug-mode* false)
 
@@ -42,12 +42,10 @@
    (let [limit (if from-left? limit-left limit-right)]
      (str (limit n s) "\n"))))
 
+;; TODO change to protocol so that users can extend
 (defn to-string
   "Specialized pretty-printer for printing our sequences of things with numbers prepended"
   [data]
-  ;; TODO use cl-format to represent nil as "nil" instead of "null"?
-  ;;     It's oddly amusing to see it as "null" tho
-  ;;     https://clojuredocs.org/clojure.core/format
   ;; (println "data =" data)
   (cond (string? data) ; strings masquerade as seqs, so we handle separately
         ,  (str " 00. " (quote-strings data))
@@ -77,10 +75,11 @@
                 ,  (limitln *max-line-length*
                             (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
                 :else
-                ,  (str "how should I print a" (type data) "?")))
+                ,  (limitln *max-line-length*
+                            (cl-format nil "~2,'0D. (no-prnt-prtcl) ~A" index (quote-strings item)))))
             (take *max-items* data))
         :else ; unhandled singular type
-        ,   (str " 00. " data)))
+        ,   (str " " data)))
 
 (defn to-debug-string [x]
   (if (and (seqable? x) (not (string? x)))
