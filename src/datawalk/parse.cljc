@@ -7,7 +7,8 @@
   #?(:clj (try (Integer/parseInt s)
                (catch NumberFormatException _ nil))
      :cljs (let [n (js/parseInt s)]
-             (if (number? n) n nil))))
+             ;; fails to #NaN, so we check for int? (NaN is not an int)
+             (if (int? n) n nil))))
 
 (def cmd-map
   {"q" dw/quit              ; exit and return saved values if any
@@ -30,11 +31,11 @@
 
 ;; TODO handle case where > 1 arg, to support `(w ! my-fn)`
 (defn parse [inp]
-  ;; (println "raw input: " inp)
+  ;; (println "raw input: " inp "is a" (type inp))
   ;; If #: drill into that value
   (if-let [n (read-int inp)]
     (partial dw/drill n)
     ;; else: get fn to call on data
     (get cmd-map inp
          (fn [data] (do (println "Unknown command:" inp)
-                      (dw/no-op data))))))
+                        (dw/no-op data))))))
