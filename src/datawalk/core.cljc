@@ -90,12 +90,14 @@
   Takes a data structure to act on, and input to parse and act on."
   [data in]
   (when pr/*debug-mode* (print-globals))
+  (flush)
   (let [f (ps/parse in)
         next-data (if f (f data) data)]
     ;; We store data in an atom only so that it can be referred
     ;; to elsewhere; we don't need it in this fn.
     (reset! dw/data next-data)
     (pr/print-data next-data)
+    (flush)
     (if (exit-command? f)
       ;; TODO - control what's output. Could potentially bypass datawalk entirely
       ;; & just handle in repl, since the exit commands aren't really relevant
@@ -141,7 +143,8 @@
 Now that you've initialized the data, use w to continue.
 (w h) will give you a summary of available commands.\n")
   (initialize-state d)
-  (pr/print-data d))
+  (pr/print-data d)
+  (flush))
 
 (defmacro w
   "Take a single step through the data, using any of the commands. For example,
