@@ -35,7 +35,8 @@ function on the current data (jumping to the result), and you can print [h]elp
 to get a reminder of these actions.
 
 datawalk tries to do one thing well: eliminate tedium and typing when navigating
-data structures. I hope you find it as useful as I have.
+data structures. The learning curve should be trivial; please let me know if it's
+not and I'll try to change that. I hope you find it as useful as I have.
 
 ## Installation:
 
@@ -83,8 +84,12 @@ In the meantime, there's a semi-interactive solution that can be used in
 since it keeps you in an ordinary REPL at all times. Its only downside is that
 you have to type a few more characters.
 
-To use the semi-interactive version, let's assume you've referred
-datawalk.core/look-at and datawalk.core/w). Start by calling
+To use the semi-interactive version, let's assume you've referred the two
+key functions:
+
+`(require '[datawalk.core :as dw :refer [look-at w]])`
+
+Start by calling
 
 `user> (look-at my-data-structure)`
 
@@ -95,6 +100,7 @@ the commands listed in the usage summary. So for example:
 user> (w 2) ; drill down to item 2 in the numbered sequence
 user> (w b) ; step backward in time
 user> (w s) ; save the current data to the map of saved values
+user> (w h) ; view the help (command summary)
 ```
 
 After each step, the current state will be stored in datawalk atoms and can

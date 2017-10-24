@@ -1,4 +1,7 @@
-(ns datawalk.print)
+(ns datawalk.print
+  ;; We use cl-format because cljs doesn't have core fn format
+  (:require #?(:clj  [clojure.pprint :refer [cl-format]]
+               :cljs [cljs.pprint    :refer [cl-format]])))
 
 (def ^:dynamic *max-items* 30)
 
@@ -55,24 +58,24 @@
               (cond
                 (sequential? data)
                 ,  (limitln *max-line-length*
-                          (format "%02d. %s" index (quote-strings item)))
+                            (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
                 ;; ...or a map of items (so item is a [k v])
                 (map? data)
                 ,  (let [
                          ;; _ (println "item =" item)
                          ;; _ (println "type =" (type item))
                          [k v] item
-                         format-s (str "%02d. %"
+                         format-s (str "~2,'0D. ~"
                                        (longest-length (keys data))
-                                       "s: %s")]
+                                       "A: ~A")]
                      (limitln *max-line-length*
-                              (format format-s
-                                      index
-                                      (limit-right *max-key-length* k)
-                                      (quote-strings v))))
+                              (cl-format nil format-s
+                                         index
+                                         (limit-right *max-key-length* k)
+                                         (quote-strings v))))
                 (set? data)
                 ,  (limitln *max-line-length*
-                         (format "%02d. %s" index (quote-strings item)))
+                            (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
                 :else
                 ,  (str "how should I print a" (type data) "?")))
             (take *max-items* data))
