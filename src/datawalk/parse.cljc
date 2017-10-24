@@ -10,6 +10,11 @@
              ;; fails to #NaN, so we check for int? (NaN is not an int)
              (if (int? n) n nil))))
 
+;; TODO add command to print-current ("c"?) -- sometimes it's useful to print
+;; the whole thing instead of the shortened versions that datawalk shows you.
+;; TODO do I possibly want a command to save current to a named var?
+;; TODO make print-saved-map not get shortened
+;; TODO commands for find-key, find-val?
 (def cmd-map
   {"q" dw/quit              ; exit and return saved values if any
    "x" dw/exit-with-current ; exit & return just this value
