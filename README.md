@@ -15,7 +15,7 @@ maps with long namespaced keys. I prefer to minimize the amount of typing I have
 to do for repetitive tasks, and this is certainly one of those tasks.
 
 So datawalk pretty-prints the top level of your data structure, and then lets
-you drill down repeatedly, typically with just a single keystroke (the number
+you drill down repeatedly, often with just a single keystroke (the number
 representing the item's position in the printed list, as shown next to the
 item) plus enter.
 
@@ -66,23 +66,15 @@ p :print-path        ; print path from root to current item.
 m :print-saved-map   ; print the map of saved data
 ```
 
-## ClojureScript
+## Fully-interactive version (Clojure-only)
 
-ClojureScript presents a challenge: while you can trivially get user input in
-Clojure with `read-line`, ClojureScript has no consistent way to do so (although
-some specific cljs repls like planck add that functionality themselves). Because
-of this issue, it's very difficult to create a true interactive program as
-described above.
+Start the fully-interactive version with `(datawalk.core/repl my-data-structure)`.
+From there, you just enter a single character followed by enter -- a number
+to drill down to a specific item in the displayed list, `b` to step back to
+where you just were, `h` for help, and so on. It should be extremely self-
+explanatory.
 
-I've gotten some interesting tips about it, and @mfikes kindly pointed to
-his abio library (https://github.com/abiocljs) which begins to address the
-problem. I'm hoping that at some point I'll manage to put together a truly
-agnostic solution (PRs welcome!).
-
-In the meantime, there's a semi-interactive solution that can be used in
-*all* REPLs, Clojure and ClojureScript. Some people may actually prefer it,
-since it keeps you in an ordinary REPL at all times. Its only downside is that
-you have to type a few more characters.
+## Semi-interactive version (Clojure and ClojureScript)
 
 To use the semi-interactive version, let's assume you've referred the two
 key functions:
@@ -117,6 +109,38 @@ Additionally, datawalk's built-in printing tools are available:
 ```
 user> (w m) prints the map of saved values.
 user> (w p) prints the path from the root to the current data.
+```
+
+## Why two versions?
+
+I developed the semi-interactive version so I could use datawalk in
+ClojureScript. ClojureScript presents a challenge: while you can trivially get
+user input in Clojure with `read-line`, ClojureScript has no consistent way to
+do so (although some specific cljs repls like planck add that functionality
+themselves). Because of this issue, it's very difficult to create a true
+interactive program as described above.
+
+I've gotten some interesting tips about it, and @mfikes kindly pointed to
+his abio library (https://github.com/abiocljs) which begins to address the
+problem. I'm hoping that at some point I'll manage to put together a truly
+agnostic solution (PRs welcome!).
+
+But now that I've created the semi-interactive version as an interim solution,
+it turns out it has some real advantages. Some people may actually prefer it,
+since it keeps you in an ordinary REPL at all times. Its only downside is that
+you have to type a few more characters.
+
+```
+         Fully-interactive:                |   Semi-interactive:
+                                           |
+PROS:  - fewer keystrokes                  | - Runs anywhere
+       - extremely fast                    | - Easy to do other stuff in the
+                                           |   middle of a session
+                                           | - You're always in a normal REPL
+                                           |
+CONS:  - Clojure-only                      | - Requires more keystrokes
+       - Can't do other stuff in the       | - Not quite as fast to explore data
+         middle of a session               |
 ```
 
 ## Configuration
