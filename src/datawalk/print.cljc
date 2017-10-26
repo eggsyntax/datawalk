@@ -42,35 +42,19 @@
    (let [limit (if from-left? limit-left limit-right)]
      (str (limit n s) "\n"))))
 
-(defn kv-item-to-string
-  "Stringify a single kv-pair of a maplike thing; suitable for fulfilling
-  Datawalk-Map-Stringable"
-  [k v]
-  )
-
-(defn seq-item-to-string
-  "Stringify a single item of a sequence; suitable for fulfilling
-  Datawalk-Seq-Stringable"
-  [item]
-  )
-
-(defn data-to-string
-  "Stringify a piece of data in its entirety; suitable for fulfilling
-  Datawalk-Stringable"
-  [data]
-  )
-
-(defprotocol Datawalk-Map-Stringable
-  "Describes how a single kv-pair of a sequence should stringify itself for
-  datawalk. Items will be prepended with numbers (4 chars) and the result will
-  be chopped off at *max-line-length* characters"
-  (dw-kv-item-to-string [k v] "convert a single kv-pair to a string for datawalk"))
-
-(defprotocol Datawalk-Seq-Stringable
-  "Describes how a single item of a sequence should stringify itself for
-  datawalk. Items will be prepended with numbers (4 chars) and the result will
-  be chopped off at *max-line-length* characters"
-  (dw-item-to-string [item] "convert a single item to a string for datawalk"))
+;; Some leftover comments for copying:
+;;   "Stringify a single kv-pair of a maplike thing; suitable for fulfilling
+;;   Datawalk-Map-Stringable"
+;;   "Stringify a single item of a sequence; suitable for fulfilling
+;;   Datawalk-Seq-Stringable"
+;;   "Stringify a piece of data in its entirety; suitable for fulfilling
+;;   Datawalk-Stringable"
+;;   "Describes how a single kv-pair of a sequence should stringify itself for
+;;   datawalk. Items will be prepended with numbers (4 chars) and the result will
+;;   be chopped off at *max-line-length* characters"
+;;   "Describes how a single item of a sequence should stringify itself for
+;;   datawalk. Items will be prepended with numbers (4 chars) and the result will
+;;   be chopped off at *max-line-length* characters"
 
 (defprotocol Datawalk-Stringable
   "Describes how a type of thing should stringify itself for datawalk.
@@ -80,14 +64,50 @@
   (dw-to-string [data] "convert to a string for datawalk")
   )
 
+;; TODO problem. This is always prepending  numbers to seqs and maps, but that's
+;; only appropriate if they're at the top level of what's being printed.
+
+(defn stringify-item [index item]
+  (limitln *max-line-length*
+           (cl-format nil "~2,'0D. ~A" index (quote-strings
+                                              (dw-to-string item)))))
+
+(defn stringify-seq
+  "For each item, print it, chopped at *max-line-length* chars, and prepended
+  with an index number (4 chars)."
+  [data]
+  (map-indexed stringify-item data))
+
+(defn stringify-kv [format-s index item]
+  (let [[k v] item]
+    (limitln *max-line-length*
+             (cl-format nil format-s
+                        index
+                        (limit-right *max-key-length* (dw-to-string k))
+                        (dw-to-string v)))))
+
+(defn stringify-map
+  "For each kv pair, stringify k and v, and print them colon-separated, chopped
+  at *max-line-length* chars, and prepended with an index number (4 chars)."
+  [data]
+  (let [;; _ (println "item =" item)
+        ;; _ (println "type =" (type item))
+        format-s (str "~2,'0D. ~"
+                      (longest-length (keys data))
+                      "A: ~A")]
+    (map-indexed (partial stringify-kv format-s) data)))
+
+(extend-protocol Datawalk-Stringable
+  Object (dw-to-string [data]
+           data)
+  java.util.Map (dw-to-string [data] (stringify-map data))
+  ;; Seq: iterate over item
+  clojure.lang.Seqable (dw-to-string [data] (stringify-seq data)))
+
 (defn to-string-new
   [data]
-  (cond
-    (extends? Datawalk-Map-Stringable data) nil
-    (extends? Datawalk-Seq-Stringable data) nil
-    (extends? Datawalk-Stringable data) nil
-    :else nil
-    ))
+  (dw-to-string data)
+  )
 
 ;; TODO change to protocol so that users can extend
 (defn to-string
@@ -95,7 +115,7 @@
   [data]
   ;; (println "data =" data)
   (cond (string? data) ; strings masquerade as seqs, so we handle separately
-        ,  (str " 00. " (quote-strings data))
+        ,  (quote-strings data)
         (seqable? data)
         ,  (map-indexed
             (fn [index item]
@@ -104,20 +124,6 @@
                 (sequential? data)
                 ,  (limitln *max-line-length*
                             (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
-                ;; ...or a map of items (so item is a [k v])
-                (map? data)
-                ,  (let [
-                         ;; _ (println "item =" item)
-                         ;; _ (println "type =" (type item))
-                         [k v] item
-                         format-s (str "~2,'0D. ~"
-                                       (longest-length (keys data))
-                                       "A: ~A")]
-                     (limitln *max-line-length*
-                              (cl-format nil format-s
-                                         index
-                                         (limit-right *max-key-length* k)
-                                         (quote-strings v))))
                 (set? data)
                 ,  (limitln *max-line-length*
                             (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
