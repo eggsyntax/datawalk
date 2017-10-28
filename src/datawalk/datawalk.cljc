@@ -158,7 +158,7 @@
 
 ;; TODO either remove limitln or create another one that prints without limitln
 (defn print-saved-map [data]
-  (println "SAVED:\n" (map (partial pr/limitln pr/*max-line-length*)
+  (println "SAVED:\n" (map (partial pr/limitln (:max-line-length @pr/config))
                            @saved))
   (println)
   data)

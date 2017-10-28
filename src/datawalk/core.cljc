@@ -89,7 +89,7 @@
   "Run a single step of exploration. Inner fn called by both `repl` and `w`.
   Takes a data structure to act on, and input to parse and act on."
   [data in]
-  (when pr/*debug-mode* (print-globals))
+  (when (:debug-mode @pr/config) (print-globals))
   (flush)
   (let [f (ps/parse in)
         next-data (if f (f data) data)]
@@ -120,7 +120,7 @@
      (initialize-state d)
      (pr/print-data d)
      (loop [data d]
-       (when pr/*debug-mode* (print-globals))
+       (when (:debug-mode @pr/config) (print-globals))
        (print prompt)
        (flush) ; no-op in cljs
        (let [in (read-input)]
