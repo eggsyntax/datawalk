@@ -3,6 +3,8 @@
   (:require #?(:clj  [clojure.pprint :refer [cl-format]]
                :cljs [cljs.pprint    :refer [cl-format]])))
 
+;; TODO change these to a global atom for ease of setting
+
 (def ^:dynamic *max-items* 30)
 
 (def ^:dynamic *max-line-length* 150)

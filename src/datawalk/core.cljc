@@ -81,7 +81,7 @@
   []
   (flush)
   (let [input #?(:clj (read-line)
-                 :cljs nil)] ; TODO (see cljs section of README)
+                 :cljs nil)] ; (see cljs section of README)
     (println input)
     input))
 
