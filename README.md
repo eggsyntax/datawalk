@@ -30,9 +30,7 @@ you [q]uit. You can also e[x]it and return just the current item.
 You can also move [b]ackward or [f]orward in time, or move [u]p a level, or jump
 back to the original [r]oot.
 
-Finally, you can use [!] (not yet implemented) to call an arbitrary single-arg
-function on the current data (jumping to the result), and you can print [h]elp
-to get a reminder of these actions.
+Finally, you can always print [h]elp to get a reminder of these actions.
 
 datawalk tries to do one thing well: eliminate tedium and typing when navigating
 data structures. The learning curve should be trivial; please let me know if it's
@@ -144,26 +142,26 @@ CONS:  - Clojure-only                      | - Requires more keystrokes
 
 ## Configuration
 
-`datawalk.print` contains several dynamic vars which you can rebind anywhere
-  to change the behavior of datawalk. These vars all affect the representation
-  of the current data structure, not the underlying behavior.
+`datawalk.print` contains a `config` atom holding several entries which you can
+  alter to change the behavior of datawalk. These configs all affect the
+  representation of the current data structure, not the underlying behavior.
 
-`*max-items*` the top level of your data structure may be a sequence with
+`:max-items` the top level of your data structure may be a sequence with
   hundreds or thousands of items; you probably don't want to print them all.
   Defaults to 30.
 
-`*max-line-length*` on each printed line, datawalk attempts to represent the
+`:max-line-length` on each printed line, datawalk attempts to represent the
   entire contents of the data on that line. This can sometimes be enormously
   long. You may wish to tune it to match the width of your repl environment.
 
-`*max-key-length*` when displaying maps, the keys may be so long that they take
+`:max-key-length` when displaying maps, the keys may be so long that they take
   up most of the space defined by \*max-line-length\*. This is most often true
   with namespaced keys. \*max-key-length\* limits the space taken up by the
   keys, in order to be sure to leave room for the values. When keys must be
   chopped, they're chopped from the right to try to capture the name rather than
   the namespace.
 
-`*debug-mode*` when this is on, datawalk will print the values of the current
+`:debug-mode` when this is truthy, datawalk will print the values of the current
   path, saved values, the-past, and the-future at each step.
 
 ## License
