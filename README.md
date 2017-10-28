@@ -134,8 +134,7 @@ you have to type a few more characters.
          Fully-interactive:                |   Semi-interactive:
                                            |
 PROS:  - fewer keystrokes                  | - Runs anywhere
-       - extremely fast                    | - Easy to do other stuff in the
-                                           |   middle of a session
+       - extremely fast                    | - Easy to do other stuff in the middle of a session
                                            | - You're always in a normal REPL
                                            |
 CONS:  - Clojure-only                      | - Requires more keystrokes
@@ -145,9 +144,9 @@ CONS:  - Clojure-only                      | - Requires more keystrokes
 
 ## Configuration
 
-datawalk.print contains several dynamic vars which you can rebind anywhere
-to change the behavior of datawalk. These vars all affect the representation
-of the current data structure, not the underlying behavior.
+`datawalk.print` contains several dynamic vars which you can rebind anywhere
+  to change the behavior of datawalk. These vars all affect the representation
+  of the current data structure, not the underlying behavior.
 
 `*max-items*` the top level of your data structure may be a sequence with
   hundreds or thousands of items; you probably don't want to print them all.
@@ -157,12 +156,12 @@ of the current data structure, not the underlying behavior.
   entire contents of the data on that line. This can sometimes be enormously
   long. You may wish to tune it to match the width of your repl environment.
 
-`*max-key-length*` when displaying maps, the keys may be so long that they
-  take up most of the space defined by *max-line-length*. This is most often
-  true with namespaced keys. *max-key-length* limits the space taken up by
-  the keys, in order to be sure to leave room for the values. When keys must
-  be chopped, they're chopped from the right to try to capture the name
-  rather than the namespace.
+`*max-key-length*` when displaying maps, the keys may be so long that they take
+  up most of the space defined by \*max-line-length\*. This is most often true
+  with namespaced keys. \*max-key-length\* limits the space taken up by the
+  keys, in order to be sure to leave room for the values. When keys must be
+  chopped, they're chopped from the right to try to capture the name rather than
+  the namespace.
 
 `*debug-mode*` when this is on, datawalk will print the values of the current
   path, saved values, the-past, and the-future at each step.

@@ -81,7 +81,7 @@
   []
   (flush)
   (let [input #?(:clj (read-line)
-                 :cljs nil)] ; TODO (see cljs section of README)
+                 :cljs nil)] ; (see cljs section of README)
     (println input)
     input))
 
@@ -98,16 +98,11 @@
     (reset! dw/data next-data)
     (pr/print-data next-data)
     (flush)
-    (if (exit-command? f)
-      ;; TODO - control what's output. Could potentially bypass datawalk entirely
-      ;; & just handle in repl, since the exit commands aren't really relevant
-      ;; except in the true repl
-      :exit ; used as signal to stop looping
-      (do (when (and (or (ps/read-int in) (time-stepping? f))
-                     (not= data next-data)) ; complicaton from various edge cases
-            (swap! dw/the-past conj data)
-            (reset! dw/the-future []))
-          next-data))))
+    (when (and (or (ps/read-int in) (time-stepping? f))
+                   (not= data next-data)) ; complicaton from various edge cases
+          (swap! dw/the-past conj data)
+          (reset! dw/the-future []))
+        next-data))
 
 ;; datawalk essentially has two versions, a fully-interactive version which
 ;; (currently) only runs in Clojure, and a semi-interactive version which runs
