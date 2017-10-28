@@ -1,7 +1,9 @@
 (ns datawalk.print
   ;; We use cl-format because cljs doesn't have core fn format
-  (:require #?(:clj  [clojure.pprint :refer [cl-format]]
-               :cljs [cljs.pprint    :refer [cl-format]])))
+  ;; (:require #?(:clj  [clojure.pprint :refer [cl-format]]
+  ;;              :cljs [cljs.pprint    :refer [cl-format]]))
+  (:require [clojure.pprint :refer [cl-format]])
+  )
 
 (def config (atom {}))
 
