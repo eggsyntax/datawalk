@@ -89,7 +89,7 @@
   "Run a single step of exploration. Inner fn called by both `repl` and `w`.
   Takes a data structure to act on, and input to parse and act on."
   [data in]
-  (when pr/*debug-mode* (print-globals))
+  (when (:debug-mode @pr/config) (print-globals))
   (flush)
   (let [f (ps/parse in)
         next-data (if f (f data) data)]
@@ -108,7 +108,7 @@
 ;; (currently) only runs in Clojure, and a semi-interactive version which runs
 ;; anywhere. See README for more details. In short, `repl` is the fully-
 ;; interactive version, and `look-at` + `w` is the semi-interactive. Note that
-;; the two versions are equal in power; the only advantage of the fully-
+;; the two versions are equal in power; the main advantage of the fully-
 ;; interactive version is that it requires typing fewer characters.
 
 #?(:clj
@@ -118,9 +118,10 @@
      [d]
      (println "Exploring interactively.\n")
      (initialize-state d)
+     (pr/initialize-config)
      (pr/print-data d)
      (loop [data d]
-       (when pr/*debug-mode* (print-globals))
+       (when (:debug-mode @pr/config) (print-globals))
        (print prompt)
        (flush) ; no-op in cljs
        (let [in (read-input)]
@@ -138,6 +139,7 @@
 Now that you've initialized the data, use w to continue.
 (w h) will give you a summary of available commands.\n")
   (initialize-state d)
+  (pr/initialize-config)
   (pr/print-data d)
   (flush))
 
