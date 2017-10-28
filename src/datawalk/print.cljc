@@ -42,7 +42,8 @@
    (limitln n s true))
   ([n s from-left?]
    (let [limit (if from-left? limit-left limit-right)]
-     (str (limit n s) "\n"))))
+     ;; (str (limit n s) "\n"))))
+     (str (limit n s)))))
 
 ;; Some leftover comments for copying:
 ;;   "Stringify a single kv-pair of a maplike thing; suitable for fulfilling
@@ -95,22 +96,41 @@
 (defn stringify-kv [format-s index item]
   (let [[k v] item]
     (limitln (:max-line-length @config)
-             (cl-format nil format-s
+             (cl-format nil
+                        format-s
                         index
-                        (limit-right (:max-key-length config) (dw-to-string k))
+                        (limit-right (:max-key-length @config) (dw-to-string k))
                         (dw-to-string v)))))
 
 (defn stringify-map
   "For each kv pair, stringify k and v, and print them colon-separated, chopped
   at max-line-length chars, and prepended with an index number (4 chars)."
-  [data]
-  (let [;; _ (println "item =" item)
-        ;; _ (println "type =" (type item))
-        format-s (str "~2,'0D. ~"
-                      (longest-length (keys data))
-                      "A: ~A")]
-    (map-indexed (partial stringify-kv format-s) data)))
+  ([data]
+   (stringify-map data false))
+  ([data top-level?]
+   (if top-level?
+     (let [;; _ (println "item =" item)
+          ;; _ (println "type =" (type item))
+          format-s (str "~2,'0D. ~"
+                        (longest-length (keys data))
+                        "A: ~A\n")]
+       (doall (map-indexed (partial stringify-kv format-s) data)))
+     (let [;; _ (println "item =" item)
+           ;; _ (println "type =" (type item))
+           format-s (str "~"
+                         (longest-length (keys data))
+                         "A: ~A")]
+       (doall (map #(apply cl-format nil format-s %) data))
 
+       )
+
+     ))
+
+)
+
+;; TODO after all the hassle w/ multiple-arity protocol, & finally getting that
+;;   to work, I now think it should be dealt with via metadata, since it's purely
+;;   a presentation preference.
 ;; TODO remember to do (take max-items)!
 (extend-protocol Datawalk-Stringable
   Object
@@ -129,7 +149,7 @@
 
 (defn to-string-new
   [data]
-  (dw-to-string data)
+  (dw-to-string data :top-level)
   )
 
 (def to-string to-string-new)
