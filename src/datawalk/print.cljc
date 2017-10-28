@@ -3,11 +3,13 @@
   (:require #?(:clj  [clojure.pprint :refer [cl-format]]
                :cljs [cljs.pprint    :refer [cl-format]])))
 
-(def config
-  (atom {:max-items 30
-         :max-line-length 120
-         :max-key-length 24
-         :debug-mode false}))
+(def config (atom {}))
+
+(defn initialize-config []
+  (reset! config {:max-items 30
+                  :max-line-length 120
+                  :max-key-length 24
+                  :debug-mode false}))
 
 (defn- longest-length
   "Return the length of the longest (in # of chars) item in the coll"

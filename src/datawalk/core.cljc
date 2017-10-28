@@ -99,10 +99,10 @@
     (pr/print-data next-data)
     (flush)
     (when (and (or (ps/read-int in) (time-stepping? f))
-                   (not= data next-data)) ; complicaton from various edge cases
-          (swap! dw/the-past conj data)
-          (reset! dw/the-future []))
-        next-data))
+               (not= data next-data)) ; complicaton from various edge cases
+      (swap! dw/the-past conj data)
+      (reset! dw/the-future []))
+    next-data))
 
 ;; datawalk essentially has two versions, a fully-interactive version which
 ;; (currently) only runs in Clojure, and a semi-interactive version which runs
@@ -138,6 +138,7 @@
 Now that you've initialized the data, use w to continue.
 (w h) will give you a summary of available commands.\n")
   (initialize-state d)
+  (pr/initialize-config)
   (pr/print-data d)
   (flush))
 
