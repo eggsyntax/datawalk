@@ -73,10 +73,13 @@
             (swap! paths assoc next-data next-path)
             next-data)
         (map? data)
-        , (let [;_ (println "nonsequential data is a" (type data))
-                ks (keys data)
+        , (let [ks (keys data)
                 k (nth ks n)
                 ;; _ (println "conjing (in map) onto" (type (@paths data)))
+                ;; Alternate option, if I wanted to print a MapEntry instead of
+                ;; just printing its value (would also require mapentry
+                ;; protocol). Not sure which is more useful.
+                ;; next-data (clojure.lang.MapEntry. k (get data k))
                 next-data (get data k)
                 next-path (conj (@paths data) k)]
             ;; (println "k:" k)

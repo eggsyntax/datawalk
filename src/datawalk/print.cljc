@@ -112,10 +112,10 @@
    (let [some-data (take (:max-items @config) data)
          longest-key (longest-length (keys some-data))]
      (if top-level?
-      (let [format-s (str "~2,'0D. ~" longest-key "A: ~A\n")]
-        (into () (map-indexed (partial stringify-kv format-s) some-data)))
-      (let [format-s (str "~" longest-key "A: ~A")]
-        (into () (map #(apply cl-format nil format-s %) some-data)))))))
+      (let [format-s (str "~2,'0D. ~" longest-key "A : ~A\n")]
+        (map-indexed (partial stringify-kv format-s) some-data))
+      (let [format-s (str "~" longest-key "A : ~A")]
+        (map #(apply cl-format nil format-s %) some-data))))))
 
 (extend-protocol Datawalk-Stringable
   Object
@@ -139,7 +139,7 @@
 
 (def to-string to-string-new)
 
-;; TODO change to protocol so that users can extend
+;; TODO when viewing a map entry, we only see the val rather than "key: val"
 #_(defn to-string
     "Specialized pretty-printer for printing our sequences of things with numbers prepended"
     [data]
