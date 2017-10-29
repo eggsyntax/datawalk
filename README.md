@@ -62,6 +62,7 @@ u :up                ; step upward [provides list of referring entities]
 h :help              ; print help & return same ent
 p :print-path        ; print path from root to current item.
 m :print-saved-map   ; print the map of saved data
+c :print-full-cur   ; print the current data in full, without truncation
 ```
 
 ## Fully-interactive version (Clojure-only)
