@@ -27,10 +27,12 @@ At any point in this process, you can [s]ave the current item or sa[v]e the
 path (from root to item) into a map of saved items which will be returned when
 you [q]uit. You can also e[x]it and return just the current item.
 
+As mentioned, you can [p]rint the path to current data. You can also print
+[c]urrent data (useful when you want to see it untruncated), print the [m]ap
+of saved data, or print [h]elp to get a reminder of these commands.
+
 You can also move [b]ackward or [f]orward in time, or move [u]p a level, or jump
 back to the original [r]oot.
-
-Finally, you can always print [h]elp to get a reminder of these actions.
 
 datawalk tries to do one thing well: eliminate tedium and typing when navigating
 data structures. The learning curve should be trivial; please let me know if it's
@@ -48,21 +50,25 @@ Details at https://clojars.org/datawalk
 ## Usage summary:
 
 ```
-(datawalk.core/repl my-data-structure) to start datawalking.
+Clojure:
+  (datawalk.core/repl my-data-structure) to start datawalking.
+Clojure and ClojureScript:
+  (look-at my-data-structure), and then (w [command])
 
-numbers: Enter any number to jump to the corresponding item
-q :quit              ; exit and return saved values if any
-x :exit-with-current ; exit & return just this value
-s :save-current      ; save to map of return values
-v :save-path         ; save path to map of return values
-b :backward          ; step backward in history
-f :forward           ; step forward in history
-r :root              ; jump back to original root
-u :up                ; step upward [provides list of referring entities]
-h :help              ; print help & return same ent
-p :print-path        ; print path from root to current item.
-m :print-saved-map   ; print the map of saved data
-c :print-full-cur   ; print the current data in full, without truncation
+Commands:
+  numbers: Enter any number to jump to the corresponding item
+  q :quit              ; exit and return saved values if any
+  x :exit-with-current ; exit & return just this value
+  s :save-current      ; save to map of return values
+  v :save-path         ; save path to map of return values
+  b :backward          ; step backward in history
+  f :forward           ; step forward in history
+  r :root              ; jump back to original root
+  u :up                ; step upward [provides list of referring entities]
+  h :help              ; print help & return same ent
+  p :print-path        ; print path from root to current item.
+  m :print-saved-map   ; print the map of saved data
+  c :print-full-cur   ; print the current data in full, without truncation
 ```
 
 ## Fully-interactive version (Clojure-only)

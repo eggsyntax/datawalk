@@ -6,7 +6,6 @@
             ;; Maybe later, for attempting read-line in cljs
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt])
-
   #?(:cljs (:require-macros [datawalk.core :refer [w]])))
 
 ;; Notes:
@@ -23,8 +22,6 @@
 ;;     some point.
 
 (def prompt "[datawalk] > ")
-
-(def ^:private exit-command? #{dw/quit dw/exit-with-current})
 
 ;; Commands (in addition to drill) which advance the time step
 (def ^:private time-stepping? #{dw/root dw/up dw/function})

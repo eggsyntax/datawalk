@@ -154,7 +154,8 @@
   ent)
 
 (defn print-path [data]
-  (println "PATH:" (@paths data))
+  (println "PATH:")
+  (println (@paths data))
   (println)
   data)
 
