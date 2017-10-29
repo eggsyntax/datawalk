@@ -105,10 +105,10 @@
    (let [some-data (take (:max-items @config) data)
          longest-key (longest-length (keys some-data))]
      (if top-level?
-      (let [format-s (str "~2,'0D. ~" longest-key "A : ~A\n")]
-        (map-indexed (partial stringify-kv format-s) some-data))
-      (let [format-s (str "~" longest-key "A : ~A")]
-        (map #(apply cl-format nil format-s %) some-data))))))
+       (let [format-s (str "~2,'0D. ~" longest-key "A : ~A\n")]
+         (map-indexed (partial stringify-kv format-s) some-data))
+       (let [format-s (str "~" longest-key "A : ~A")]
+         (map #(apply cl-format nil format-s %) some-data))))))
 
 (extend-protocol Datawalk-Stringable
   Object
