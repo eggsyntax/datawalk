@@ -5,13 +5,14 @@
   (:require [clojure.pprint :refer [cl-format]])
   )
 
-(def config (atom {}))
+(def config (atom nil))
 
-(defn initialize-config []
-  (reset! config {:max-items 30
-                  :max-line-length 120
-                  :max-key-length 24
-                  :debug-mode false}))
+(defn maybe-initialize-config []
+  (when-not @config
+    (reset! config {:max-items 30
+                    :max-line-length 120
+                    :max-key-length 24
+                    :debug-mode false})))
 
 (defn- longest-length
   "Return the length of the longest (in # of chars) item in the coll"
@@ -45,7 +46,8 @@
      (str (limit n s) "\n"))))
 
 (defn- is-seqable?
-  "seqable? is added in clj 1.9 -- using this for backward-compatibility"
+  "seqable? is added in clj 1.9 -- using this roughly equivalent fn for
+  backward-compatibility"
   [x]
   (if (sequential? x)
     true

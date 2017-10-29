@@ -87,7 +87,7 @@
      [d]
      (println "Exploring interactively.\n")
      (initialize-state d)
-     (pr/initialize-config)
+     (pr/maybe-initialize-config)
      (pr/print-data d)
      (loop [data d]
        (when (:debug-mode @pr/config) (print-globals))
@@ -108,7 +108,7 @@
 Now that you've initialized the data, use w to continue.
 (w h) will give you a summary of available commands.\n")
   (initialize-state d)
-  (pr/initialize-config)
+  (pr/maybe-initialize-config)
   (pr/print-data d)
   (flush))
 
