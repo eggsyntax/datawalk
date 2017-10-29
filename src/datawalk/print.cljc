@@ -44,6 +44,16 @@
    (let [limit (if from-left? limit-left limit-right)]
      (str (limit n s) "\n"))))
 
+(defn- is-seqable?
+  "seqable? is added in clj 1.9 -- using this for backward-compatibility"
+  [x]
+  (if (sequential? x)
+    true
+    (try
+      (seq x)
+      #?(:clj (catch IllegalArgumentException e nil)
+         :cljs (catch js/Error e nil)))))
+
 ;; TODO change to protocol so that users can extend (see protocols branch)
 (defn to-string
   "Specialized pretty-printer for printing our sequences of things with numbers prepended"
@@ -51,7 +61,7 @@
   ;; (println "data =" data)
   (cond (string? data) ; strings masquerade as seqs, so we handle separately
         ,  (str " 00. " (quote-strings data))
-        (seqable? data)
+        (is-seqable? data)
         ,  (map-indexed
             (fn [index item]
               ;; data is a seq of items...
