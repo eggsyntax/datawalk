@@ -5,7 +5,7 @@
   (:require [clojure.pprint :refer [cl-format]])
   )
 
-(def config (atom {}))
+(defonce config (atom {}))
 
 (defn initialize-config []
   (reset! config {:max-items 30
@@ -76,7 +76,7 @@
 (defn stringify-seq-item-numbered [index item]
   (let [format-s (str "~2,'0D. ~A")]
     (limitln (:max-line-length @config)
-             (cl-format nil  "~2,'0D. ~A" index (quote-strings
+             (cl-format nil  "~2,'0D. ~A\n" index (quote-strings
                                                  (dw-to-string item))))))
 
 (defn stringify-seq-item [_ item] ; ignore index
@@ -91,7 +91,7 @@
    (map-indexed (if top-level
                   stringify-seq-item-numbered
                   stringify-seq-item)
-                data)))
+                (take (:max-items @config) data))))
 
 (defn stringify-kv [format-s index item]
   (let [[k v] item]
@@ -104,34 +104,19 @@
 
 (defn stringify-map
   "For each kv pair, stringify k and v, and print them colon-separated, chopped
-  at max-line-length chars, and prepended with an index number (4 chars)."
+  at max-line-length chars, and (if top-level?) prepended with an index number
+  (4 chars)."
   ([data]
    (stringify-map data false))
   ([data top-level?]
-   (if top-level?
-     (let [;; _ (println "item =" item)
-          ;; _ (println "type =" (type item))
-          format-s (str "~2,'0D. ~"
-                        (longest-length (keys data))
-                        "A: ~A\n")]
-       (doall (map-indexed (partial stringify-kv format-s) data)))
-     (let [;; _ (println "item =" item)
-           ;; _ (println "type =" (type item))
-           format-s (str "~"
-                         (longest-length (keys data))
-                         "A: ~A")]
-       (doall (map #(apply cl-format nil format-s %) data))
+   (let [some-data (take (:max-items @config) data)
+         longest-key (longest-length (keys some-data))]
+     (if top-level?
+      (let [format-s (str "~2,'0D. ~" longest-key "A: ~A\n")]
+        (into () (map-indexed (partial stringify-kv format-s) some-data)))
+      (let [format-s (str "~" longest-key "A: ~A")]
+        (into () (map #(apply cl-format nil format-s %) some-data)))))))
 
-       )
-
-     ))
-
-)
-
-;; TODO after all the hassle w/ multiple-arity protocol, & finally getting that
-;;   to work, I now think it should be dealt with via metadata, since it's purely
-;;   a presentation preference.
-;; TODO remember to do (take max-items)!
 (extend-protocol Datawalk-Stringable
   Object
   (dw-to-string
