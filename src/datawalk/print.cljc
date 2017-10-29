@@ -123,6 +123,10 @@
   (dw-to-string
     ([data] (stringify-seq data))
     ([data top-level] (stringify-seq data top-level)))
+  nil
+  (dw-to-string
+    ([data] "")
+    ([data top-level] ""))
   )
 
 (defn to-string-new
