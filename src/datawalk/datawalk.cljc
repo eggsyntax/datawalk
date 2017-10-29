@@ -1,10 +1,8 @@
 (ns datawalk.datawalk
   "Transforms data"
   (:require
-            ;; Temporary for dev:
-            [datawalk.print :as pr]
-            [datawalk.util :as u]
-            ))
+    [datawalk.print :as pr]
+    [datawalk.util :as u]))
 
 ;;;;;;; State:
 
@@ -145,9 +143,9 @@
    "h" "help              ; print help & return same ent"
    "p" "print-path        ; path: print path to current item."
    "m" "print-saved-map   ; print data saved so far"
-   "c" "print-full-cur    ; print the current data in full, not truncated"
+   "c" "print-full-cur    ; print the current data in full, not truncated"})
    ;; "!" "function ; call an arbitrary 1-arg fn on data, jump to result"
-   })
+
 
 (defn help [ent]
   (println "COMMANDS:")

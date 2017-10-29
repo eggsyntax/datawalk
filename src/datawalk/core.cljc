@@ -5,18 +5,9 @@
             [clojure.string :as string]
             ;; Maybe later, for attempting read-line in cljs
             #_[clojure.tools.reader :as rdr]
-            #_[clojure.tools.reader.reader-types :as rdrt]
-            )
-  #?(:cljs (:require-macros [datawalk.core :refer [w]])))
+            #_[clojure.tools.reader.reader-types :as rdrt])
 
-;; Dependency tree
-;; core
-;;   datawalk (includes all state)
-;;     (print)
-;;   parse
-;;     (datawalk)
-;;   print
-;;     util
+  #?(:cljs (:require-macros [datawalk.core :refer [w]])))
 
 ;; Notes:
 ;; - Throughout: d = data
@@ -30,32 +21,6 @@
 ;;     Datomic data, which took heavy advantage of the laziness of Datomic's
 ;;     EntityMap. I'd ideally like to bring some of that over to datawalk at
 ;;     some point.
-;; - ClojureScript ideas:
-;;   - Would use a customized clojure.main repl, but AFAIK it won't work w cljs.
-;;   - A key challenge for making this work in cljs is that generic user input
-;;     isn't available in cljs. I brought it up in #clojurescript, and found the
-;;     following resources:
-;;     - https://clojurians.slack.com/archives/C03S1L9DN/p1508602683000025
-;;       - discussion goes at least until 2:30pm
-;;       - note especially: `:special-fns` get processed by clj
-;;     - https://github.com/abiocljs (@mfikes)
-;;     - https://github.com/potetm/tire-iron
-;;     - https://www.google.com/search?q=IReplEnvOption
-;;   - As far as I can tell, special fns are generally defined by the repl, so it
-;;     may not be possible to inject them for my own needs unless I create my own
-;;     repl.
-;;     - see https://github.com/bhauman/lein-figwheel/blob/bddbcc0fe326ea1e4aafb649a0b95c9113377611/sidecar/src/figwheel_sidecar/system.clj
-;;   - Other options:
-;;     - I could just make a totally ordinary fn and make users use that at the
-;;     cljs repl -- ie just print it out, and then do
-;;     user> (x b) ; backward
-;;     user> (x 3) ; drill to item 3
-;;     ...and so on.
-;;     - I could make users run in a specific env, eg planck or node. Unfortunately,
-;;       reading input seems to be wildly inconsistent across browsers (eg
-;;       SpiderMonkey has `read-line`), so I couldn't even make something that
-;;       worked in all browser repls :(
-;;     - I could make users copy-paste over into clj :(
 
 (def prompt "[datawalk] > ")
 
@@ -70,8 +35,8 @@
   (reset! dw/paths {d []}) ; Start with (empty) path to root
   (reset! dw/saved {})
   (reset! dw/the-past [])
-  (reset! dw/the-future [])
-  )
+  (reset! dw/the-future []))
+
 
 (defn print-globals [] (pr/print-globals  (@dw/paths @dw/data) @dw/saved @dw/the-past @dw/the-future))
 
@@ -84,6 +49,12 @@
                  :cljs nil)] ; (see cljs section of README)
     (println input)
     input))
+
+(defn set-line-length [n]
+  (let [key-len (int (* 0.2 n))]
+    (swap! pr/config assoc
+           :max-line-length n
+           :max-key-length  key-len)))
 
 (defn datawalk
   "Run a single step of exploration. Inner fn called by both `repl` and `w`.
@@ -98,11 +69,12 @@
     (reset! dw/data next-data)
     (pr/print-data next-data)
     (flush)
-    (when (and (or (ps/read-int in) (time-stepping? f))
-                   (not= data next-data)) ; complicaton from various edge cases
-          (swap! dw/the-past conj data)
-          (reset! dw/the-future []))
-        next-data))
+    (when (and
+           (or (ps/read-int in) (time-stepping? f))
+           (not= data next-data)) ; complicaton from various edge cases
+      (swap! dw/the-past conj data)
+      (reset! dw/the-future []))
+    next-data))
 
 ;; datawalk essentially has two versions, a fully-interactive version which
 ;; (currently) only runs in Clojure, and a semi-interactive version which runs
@@ -164,7 +136,5 @@ Now that you've initialized the data, use w to continue.
   (repl {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
 
   ;; semi-interactive
-  (look-at {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
+  (look-at {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}}))
   ;; followed by any number of calls to w
-
-  )

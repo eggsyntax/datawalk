@@ -59,13 +59,6 @@
 ;;   datawalk. Items will be prepended with numbers (4 chars) and the result will
 ;;   be chopped off at max-line-length characters"
 
-;; TODO YOUAREHERE trying to set up a 2nd arity for dw-to-string, which
-;; when present causes the data to be print in a numbered, nl-separated
-;; way (at least if that applies to this sort of thing)
-;; BUT AFAICT it just always throws an error on the single-arity version.
-;; eg compare (dw-to-string 7) (dw-to-string 7 8) -- see implementations
-;; for those 2 calls on lines 114/115
-
 (defprotocol Datawalk-Stringable
   "Describes how a type of thing should stringify itself for datawalk.
   Implementations should work in both clj and cljs (cl-format is useful for
