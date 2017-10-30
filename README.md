@@ -32,7 +32,8 @@ As mentioned, you can [p]rint the path to current data. You can also print
 of saved data, or print [h]elp to get a reminder of these commands.
 
 You can also move [b]ackward or [f]orward in time, or move [u]p a level, or jump
-back to the original [r]oot.
+back to the original [r]oot, or use [!] (function) to call an arbitrary
+single-arg │ function on the current data (jumping to the result).
 
 datawalk tries to do one thing well: eliminate tedium and typing when navigating
 data structures. The learning curve should be trivial; please let me know if it's
@@ -70,6 +71,7 @@ Commands:
   b :backward          ; step backward in history
   f :forward           ; step forward in history
   r :root              ; jump back to original root
+  ! :function          ; call a 1-arg fn on data, jump to result (clj only)
   u :up                ; step upward [provides list of referring entities]
   h :help              ; print help & return same ent
   p :print-path        ; print path from root to current item.

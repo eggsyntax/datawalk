@@ -25,8 +25,8 @@
    "p" dw/print-path        ; print path from root to current item.
    "m" dw/print-saved-map   ; print the map of saved data
    "c" dw/print-full-cur    ; print the current data in full, not truncated
+   "!" dw/function          ; call an arbitrary 1-arg fn on data, jump to result
    ;;; Not yet implemented:
-   ;; "!" dw/function          ; call an arbitrary 1-arg fn on data, jump to result
    ;; "t" nil ; type: print the type of the current item
    ;;; possibles: map and filter cmds, similar to function cmd.
    "" nil ; all others become no-op
