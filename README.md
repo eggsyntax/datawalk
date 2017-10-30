@@ -122,6 +122,12 @@ user> (w m) prints the map of saved values.
 user> (w p) prints the path from the root to the current data.
 ```
 
+## Demo (semi-interactive mode):
+
+
+![Demo](resources/semi-interactive.gif?raw=true "Demo")
+
+
 ## Why two versions?
 
 I developed the semi-interactive version so I could use datawalk in
@@ -159,23 +165,27 @@ CONS:  - Clojure-only                      | - Requires more keystrokes
   alter to change the behavior of datawalk. These configs all affect the
   representation of the current data structure, not the underlying behavior.
 
-`:max-items` the top level of your data structure may be a sequence with
+* `:max-items` the top level of your data structure may be a sequence with
   hundreds or thousands of items; you probably don't want to print them all.
   Defaults to 30.
 
-`:max-line-length` on each printed line, datawalk attempts to represent the
+* `:max-line-length` on each printed line, datawalk attempts to represent the
   entire contents of the data on that line. This can sometimes be enormously
   long. You may wish to tune it to match the width of your repl environment.
 
-`:max-key-length` when displaying maps, the keys may be so long that they take
+* `:max-key-length` when displaying maps, the keys may be so long that they take
   up most of the space defined by \*max-line-length\*. This is most often true
   with namespaced keys. \*max-key-length\* limits the space taken up by the
   keys, in order to be sure to leave room for the values. When keys must be
   chopped, they're chopped from the right to try to capture the name rather than
   the namespace.
 
-`:debug-mode` when this is truthy, datawalk will print the values of the current
+* `:debug-mode` when this is truthy, datawalk will print the values of the current
   path, saved values, the-past, and the-future at each step.
+
+`datawalk.core` also has a convenience function, `set-line-length`, which can be
+  passed a single number. `max-line-length` will be set to this value, and
+  `max-key-length` will be set to 20% of the value.
 
 ## License
 
