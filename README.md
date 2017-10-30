@@ -40,10 +40,9 @@ not and I'll try to change that. I hope you find it as useful as I have.
 
 ## Demo (fully-interactive mode):
 
-<!-- ![Demo](resources/fully-interactive.gif "Demo") -->
-<!-- ![Demo](blob:https://imgur.com/11cf2505-f62b-457c-a4e3-c3f4c4d6ac4e "Demo") -->
-<!-- ![Demo](https://imgur.com/a/PkkDG "Demo") -->
+
 ![Demo](resources/fully-interactive.gif?raw=true "Demo")
+
 
 ## Installation:
 
