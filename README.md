@@ -74,7 +74,7 @@ Commands:
   h :help              ; print help & return same ent
   p :print-path        ; print path from root to current item.
   m :print-saved-map   ; print the map of saved data
-  c :print-full-cur   ; print the current data in full, without truncation
+  c :print-full-cur    ; print the current data in full, without truncation
 ```
 
 ## Fully-interactive version (Clojure-only)
@@ -186,6 +186,14 @@ CONS:  - Clojure-only                      | - Requires more keystrokes
 `datawalk.core` also has a convenience function, `set-line-length`, which can be
   passed a single number. `max-line-length` will be set to this value, and
   `max-key-length` will be set to 20% of the value.
+
+## Note for Emacs users
+
+Emacs accepts user input (via `read-line`) in the minibuffer -- this can be
+confusing when you first encounter it; the REPL buffer looks like it's hung.
+Just look down at the minibuffer and you'll see you can enter a command there.
+Note that it's important to q)uit the datawalk session, or your REPL buffer may
+be left in a problematic state.
 
 ## License
 
