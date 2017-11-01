@@ -192,4 +192,5 @@
      :cljs
      (do (println "! command is only available in Clojure.")
          (println "  In cljs, just call a fn on the data as you usually would.")
+         (println)
          data)))
