@@ -10,8 +10,10 @@
              ;; fails to #NaN, so we check for int? (NaN is not an int)
              (if (int? n) n nil))))
 
-;; TODO do I possibly want a command to save current to a named var?
-;; TODO commands for find-key, find-val?
+;; TODO do I possibly want a command to save current to a named var? (eg d)ef )
+;; TODO commands for find-key, find-val? g)rep
+;; TODO change certain commands to mnemonic symbols? I'm thinking
+;;      < and > for backward/forward, maybe ^ for up.
 (def cmd-map
   {"q" dw/quit              ; exit and return saved values if any
    "x" dw/exit-with-current ; exit & return just this value
