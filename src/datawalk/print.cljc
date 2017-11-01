@@ -136,6 +136,10 @@
 
 (def to-string to-string-new)
 
+;; TODO THINK as I build protocols for other datatypes - json, datomic, etc -
+;;      it'll probably entail extra dependencies. Consider creating 2 builds,
+;;      one with minimal dependencies and one that's batteries-included &
+;;      has protocols for a bunch of datatypes.
 ;; TODO when viewing a map entry, we only see the val rather than "key: val"
 #_(defn to-string
     "Specialized pretty-printer for printing our sequences of things with numbers prepended"
