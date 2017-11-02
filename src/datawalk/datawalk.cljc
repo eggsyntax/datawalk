@@ -1,8 +1,8 @@
 (ns datawalk.datawalk
   "Transforms data"
-  (:require
-    [datawalk.print :as pr]
-    [datawalk.util :as u]))
+  (:require [clojure.pprint :refer [pprint]]
+            [datawalk.print :as pr]
+            [datawalk.util :as u]))
 
 ;;;;;;; State:
 
@@ -165,9 +165,15 @@
   (println)
   data)
 
-(defn print-full-cur [data]
+(defn prn-full-cur [data]
   (println "CURRENT:")
-  (println data)
+  (prn data)
+  (println)
+  data)
+
+(defn pprint-full-cur [data]
+  (println "CURRENT:")
+  (pprint data)
   (println)
   data)
 

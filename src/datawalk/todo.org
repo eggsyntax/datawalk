@@ -4,9 +4,12 @@
 ** At (limit-right (:max-key-length @config) k)
 * TODO add example data (& instructions) - maybe with core/demo fn for ease
 * TODO need some easy way to access state from core so users don't need to require multiple nss
+* TODO handle java.lang.IndexOutOfBoundsException (& JS equivalent) when drilling
 * TODO automatically deref references?
 * Commands:
 ** TODO split `c` into prn and pprint
+*** TODO Consider general variants of printing cmds, where capital means pprint
+**** Could handle it at the `parse` level, where capital letters are lowercased & a flag is set to indicate "special" or "variant"
 ** TODO do I possibly want a command to save current to a named var? (eg d)ef )
 ** TODO commands for find-key, find-val? g)rep
 ** TODO change certain commands to mnemonic symbols? I'm thinking < and > for backward/forward, maybe ^ for up.

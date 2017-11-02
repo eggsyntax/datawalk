@@ -22,7 +22,8 @@
    "h" dw/help              ; print help & return same ent
    "p" dw/print-path        ; print path from root to current item.
    "m" dw/print-saved-map   ; print the map of saved data
-   "c" dw/print-full-cur    ; print the current data in full, not truncated
+   "c" dw/prn-full-cur    ; print the current data in full, not truncated
+   "C" dw/pprint-full-cur   ; pretty-print the current data in full, not truncated
    "!" dw/function          ; call a 1-arg fn on data, jump to result (clj-only)
    "" nil ; all others become no-op
    })
