@@ -87,7 +87,7 @@
                 :else
                 ;; TODO get rid of "no-prnt-prtcl" -- maybe a `?`?
                 ,  (limitln (:max-line-length @config)
-                            (cl-format nil "~2,'0D. (no-prnt-prtcl) ~A" index (quote-strings item)))))
+                            (cl-format nil "~2,'0D. ~A" index (quote-strings item)))))
             (take (:max-items @config) data))
         :else ; unhandled singular type
         ,   (str " " data)))
