@@ -1,0 +1,16 @@
+* TODO change printing to protocol so that users can extend (see protocols branch)
+** In progress, see `protocols` branch
+* TODO printing keys -- if namespaced keyword & longer than max-line-length, take `name` before limiting
+** At (limit-right (:max-key-length @config) k)
+* TODO add example data (& instructions) - maybe with core/demo fn for ease
+* TODO need some easy way to access state from core so users don't need to require multiple nss
+* TODO automatically deref references?
+* Commands:
+** TODO split `c` into prn and pprint
+** TODO do I possibly want a command to save current to a named var? (eg d)ef )
+** TODO commands for find-key, find-val? g)rep
+** TODO change certain commands to mnemonic symbols? I'm thinking < and > for backward/forward, maybe ^ for up.
+** TODO consider: `t` for type
+** TODO consider: map and/or filter commands
+* TODO Find or build a way to generalize `read-line` across environments.
+** @mfikes ABIO lib might help.

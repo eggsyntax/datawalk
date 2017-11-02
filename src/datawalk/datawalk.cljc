@@ -159,7 +159,6 @@
   (println)
   data)
 
-;; TODO either remove limitln or create another one that prints without limitln
 (defn print-saved-map [data]
   (println "SAVED:")
   (println @saved)

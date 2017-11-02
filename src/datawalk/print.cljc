@@ -56,7 +56,6 @@
       #?(:clj (catch IllegalArgumentException e nil)
          :cljs (catch js/Error e nil)))))
 
-;; TODO change to protocol so that users can extend (see protocols branch)
 (defn to-string
   "Specialized pretty-printer for printing our sequences of things with numbers prepended"
   [data]
@@ -83,8 +82,6 @@
                      (limitln (:max-line-length @config)
                               (cl-format nil format-s
                                          index
-                                         ;; TODO if namespaced keyword & longer than
-                                         ;; max-line-length, take `name` before limiting
                                          (limit-right (:max-key-length @config) k)
                                          (quote-strings v))))
                 (set? data)

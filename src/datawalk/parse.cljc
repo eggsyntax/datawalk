@@ -10,10 +10,6 @@
              ;; fails to #NaN, so we check for int? (NaN is not an int)
              (if (int? n) n nil))))
 
-;; TODO do I possibly want a command to save current to a named var? (eg d)ef )
-;; TODO commands for find-key, find-val? g)rep
-;; TODO change certain commands to mnemonic symbols? I'm thinking
-;;      < and > for backward/forward, maybe ^ for up.
 (def cmd-map
   {"q" dw/quit              ; exit and return saved values if any
    "x" dw/exit-with-current ; exit & return just this value
@@ -27,14 +23,10 @@
    "p" dw/print-path        ; print path from root to current item.
    "m" dw/print-saved-map   ; print the map of saved data
    "c" dw/print-full-cur    ; print the current data in full, not truncated
-   "!" dw/function          ; call an arbitrary 1-arg fn on data, jump to result
-   ;;; Not yet implemented:
-   ;; "t" nil ; type: print the type of the current item
-   ;;; possibles: map and filter cmds, similar to function cmd.
+   "!" dw/function          ; call a 1-arg fn on data, jump to result (clj-only)
    "" nil ; all others become no-op
    })
 
-;; TODO handle case where > 1 arg, to support `(w ! my-fn)`
 (defn parse [inp]
   ;; (println "raw input: " inp "is a" (type inp))
   ;; If #: drill into that value
@@ -43,4 +35,4 @@
     ;; else: get fn to call on data
     (get cmd-map inp
          (fn [data] (do (println "Unknown command:" inp)
-                        (dw/no-op data))))))
+                       (dw/no-op data))))))

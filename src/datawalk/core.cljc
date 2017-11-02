@@ -38,7 +38,6 @@
 (defn print-globals [] (pr/print-globals  (@dw/paths @dw/data) @dw/saved @dw/the-past @dw/the-future))
 
 (defn- read-input
-  ;; TODO
   "Get user input (at repl) -- later this needs to be generalized for both clj
   and the various cljs environments."
   []
