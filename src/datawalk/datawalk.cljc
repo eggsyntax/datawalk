@@ -1,8 +1,8 @@
 (ns datawalk.datawalk
   "Transforms data"
-  (:require
-    [datawalk.print :as pr]
-    [datawalk.util :as u]))
+  (:require [clojure.pprint :refer [pprint]]
+            [datawalk.print :as pr]
+            [datawalk.util :as u]))
 
 ;;;;;;; State:
 
@@ -131,45 +131,77 @@
 (def help-text
   ;; quit and exit-with-current are only relevant in the fully interactive
   ;; repl version, but this is not actually enforced in any way.
-  {"#" "Enter any listed number to drill to that item"
-   "q" "quit              ; exit and return saved values if any (repl-only)"
-   "x" "exit-with-current ; exit & return just this ent (repl-only)"
-   "s" "save-current      ; save to map of return values"
-   "v" "save-path         ; save path to map of return values"
-   "b" "backward          ; step backward in history"
-   "f" "forward           ; step forward in history"
-   "r" "root              ; jump back to root"
-   "u" "up                ; step upward [provides list of referring entities]"
-   "h" "help              ; print help & return same ent"
-   "p" "print-path        ; path: print path to current item."
-   "m" "print-saved-map   ; print data saved so far"
-   "c" "print-full-cur    ; print the current data in full, not truncated"})
-   ;; "!" "function ; call an arbitrary 1-arg fn on data, jump to result"
+  ["q:  quit              ; exit and return saved values if any (repl-only)"
+   "x:  exit-with-current ; exit & return just this ent (repl-only)"
+   "s:  save-current      ; save to map of return values"
+   "v:  save-path         ; save path to map of return values"
+   "b:  backward          ; step backward in history"
+   "f:  forward           ; step forward in history"
+   "r:  root              ; jump back to root"
+   "u:  up                ; step upward [provides list of referring entities]"
+   "h:  help              ; print help & return same ent"
+   "p:  print-path        ; path: print path to current item."
+   "m:  print-saved-map   ; print data saved so far"
+   "c:  print-full-cur    ; print the current data in full, not truncated"
+   "!:  function          ; call a 1-arg fn on data, jump to result (clj only)"])
 
 
 (defn help [ent]
   (println "COMMANDS:")
+  (println "#  Enter any listed number to drill to that item")
   (run! println help-text)
   (println)
   ent)
 
 (defn print-path [data]
-  (println "PATH:" (@paths data))
+  (println "PATH:")
+  (println (@paths data))
   (println)
   data)
 
-;; TODO either remove limitln or create another one that prints without limitln
-(defn print-saved-map [data]
+(defn prn-saved-map [data]
   (println "SAVED:")
-  (println @saved)
+  (prn @saved)
   (println)
   data)
 
-(defn print-full-cur [data]
+(defn pprint-saved-map [data]
+  (println "SAVED:")
+  (pprint @saved)
+  (println)
+  data)
+
+(defn prn-full-cur [data]
   (println "CURRENT:")
-  (println data)
+  (prn data)
   (println)
   data)
 
-;; TODO implement
-(defn function [data])
+(defn pprint-full-cur [data]
+  (println "CURRENT:")
+  (pprint data)
+  (println)
+  data)
+
+#?(:clj (defn- read-input [prompt]
+          (print prompt)
+          (let [input (read-line)]
+            (println input)
+            input)))
+
+(defn function [data]
+  #?(:clj
+     (let [_ (println "Please enter a function of one variable")
+           inp (read-input "Enter a fn >> ")
+           f (eval (read-string inp))]
+       (if (contains? #{"q" ""} inp) ; in case they want to abort
+         data
+         (if (fn? f)
+           (f data) ; typical outcome
+           (do (println inp "is not a function; try again.")
+               (function data)))))
+     :cljs
+     (do (println "! command is only available in Clojure.")
+         (println "  In cljs, just call a fn on the data as you usually would.")
+         (println)
+         data)))

@@ -27,20 +27,30 @@ At any point in this process, you can [s]ave the current item or sa[v]e the
 path (from root to item) into a map of saved items which will be returned when
 you [q]uit. You can also e[x]it and return just the current item.
 
-You can also move [b]ackward or [f]orward in time, or move [u]p a level, or jump
-back to the original [r]oot.
+As mentioned, you can [p]rint the path to current data. You can also print
+[c]urrent data (useful when you want to see it untruncated), print the [m]ap
+of saved data, or print [h]elp to get a reminder of these commands. Capital
+C and M give you pretty-printed versions of current and saved data.
 
-Finally, you can always print [h]elp to get a reminder of these actions.
+You can also move [b]ackward or [f]orward in time, or move [u]p a level, or jump
+back to the original [r]oot, or use [!] (function) to call an arbitrary
+single-arg │ function on the current data (jumping to the result).
 
 datawalk tries to do one thing well: eliminate tedium and typing when navigating
 data structures. The learning curve should be trivial; please let me know if it's
 not and I'll try to change that. I hope you find it as useful as I have.
 
+## Demo (fully-interactive mode):
+
+
+![Demo](resources/fully-interactive.gif?raw=true "Demo")
+
+
 ## Installation:
 
 Leiningen:
 ```
-[datawalk "0.1.3-SNAPSHOT"]
+[datawalk "0.1.4-SNAPSHOT"]
 ```
 
 Details at https://clojars.org/datawalk
@@ -48,21 +58,26 @@ Details at https://clojars.org/datawalk
 ## Usage summary:
 
 ```
-(datawalk.core/repl my-data-structure) to start datawalking.
+Clojure:
+  (datawalk.core/repl my-data-structure) to start datawalking.
+Clojure and ClojureScript:
+  (look-at my-data-structure), and then (w [command])
 
-numbers: Enter any number to jump to the corresponding item
-q :quit              ; exit and return saved values if any
-x :exit-with-current ; exit & return just this value
-s :save-current      ; save to map of return values
-v :save-path         ; save path to map of return values
-b :backward          ; step backward in history
-f :forward           ; step forward in history
-r :root              ; jump back to original root
-u :up                ; step upward [provides list of referring entities]
-h :help              ; print help & return same ent
-p :print-path        ; print path from root to current item.
-m :print-saved-map   ; print the map of saved data
-c :print-full-cur   ; print the current data in full, without truncation
+Commands:
+  numbers: Enter any number to jump to the corresponding item
+  q :quit              ; exit and return saved values if any
+  x :exit-with-current ; exit & return just this value
+  s :save-current      ; save to map of return values
+  v :save-path         ; save path to map of return values
+  b :backward          ; step backward in history
+  f :forward           ; step forward in history
+  r :root              ; jump back to original root
+  ! :function          ; call a 1-arg fn on data, jump to result (clj only)
+  u :up                ; step upward [provides list of referring entities]
+  h :help              ; print help & return same ent
+  p :print-path        ; print path from root to current item.
+  m :print-saved-map   ; print the map of saved data
+  c :print-full-cur    ; print the current data in full, without truncation
 ```
 
 ## Fully-interactive version (Clojure-only)
@@ -110,6 +125,12 @@ user> (w m) prints the map of saved values.
 user> (w p) prints the path from the root to the current data.
 ```
 
+## Demo (semi-interactive mode):
+
+
+![Demo](resources/semi-interactive.gif?raw=true "Demo")
+
+
 ## Why two versions?
 
 I developed the semi-interactive version so I could use datawalk in
@@ -147,23 +168,35 @@ CONS:  - Clojure-only                      | - Requires more keystrokes
   alter to change the behavior of datawalk. These configs all affect the
   representation of the current data structure, not the underlying behavior.
 
-`:max-items` the top level of your data structure may be a sequence with
+* `:max-items` the top level of your data structure may be a sequence with
   hundreds or thousands of items; you probably don't want to print them all.
   Defaults to 30.
 
-`:max-line-length` on each printed line, datawalk attempts to represent the
+* `:max-line-length` on each printed line, datawalk attempts to represent the
   entire contents of the data on that line. This can sometimes be enormously
   long. You may wish to tune it to match the width of your repl environment.
 
-`:max-key-length` when displaying maps, the keys may be so long that they take
+* `:max-key-length` when displaying maps, the keys may be so long that they take
   up most of the space defined by \*max-line-length\*. This is most often true
   with namespaced keys. \*max-key-length\* limits the space taken up by the
   keys, in order to be sure to leave room for the values. When keys must be
   chopped, they're chopped from the right to try to capture the name rather than
   the namespace.
 
-`:debug-mode` when this is truthy, datawalk will print the values of the current
+* `:debug-mode` when this is truthy, datawalk will print the values of the current
   path, saved values, the-past, and the-future at each step.
+
+`datawalk.core` also has a convenience function, `set-line-length`, which can be
+  passed a single number. `max-line-length` will be set to this value, and
+  `max-key-length` will be set to 20% of the value.
+
+## Note for Emacs users
+
+Emacs accepts user input (via `read-line`) in the minibuffer -- this can be
+confusing when you first encounter it; the REPL buffer looks like it's hung.
+Just look down at the minibuffer and you'll see you can enter a command there.
+Note that it's important to q)uit the datawalk session, or your REPL buffer may
+be left in a problematic state.
 
 ## License
 

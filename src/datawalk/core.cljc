@@ -6,7 +6,6 @@
             ;; Maybe later, for attempting read-line in cljs
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt])
-
   #?(:cljs (:require-macros [datawalk.core :refer [w]])))
 
 ;; Notes:
@@ -23,8 +22,6 @@
 ;;     some point.
 
 (def prompt "[datawalk] > ")
-
-(def ^:private exit-command? #{dw/quit dw/exit-with-current})
 
 ;; Commands (in addition to drill) which advance the time step
 (def ^:private time-stepping? #{dw/root dw/up dw/function})
@@ -90,7 +87,7 @@
      [d]
      (println "Exploring interactively.\n")
      (initialize-state d)
-     (pr/initialize-config)
+     (pr/maybe-initialize-config)
      (pr/print-data d)
      (loop [data d]
        (when (:debug-mode @pr/config) (print-globals))
@@ -102,7 +99,6 @@
            (= "x" in) data
            :else (recur (datawalk data in)))))))
 
-
 (defn look-at
   "Initializes the semi-interactive version. Typically you should call look-at
   once, and then w many times. Usable in all environments."
@@ -111,7 +107,7 @@
 Now that you've initialized the data, use w to continue.
 (w h) will give you a summary of available commands.\n")
   (initialize-state d)
-  (pr/initialize-config)
+  (pr/maybe-initialize-config)
   (pr/print-data d)
   (flush))
 
