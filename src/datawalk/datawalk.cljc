@@ -159,9 +159,15 @@
   (println)
   data)
 
-(defn print-saved-map [data]
+(defn prn-saved-map [data]
   (println "SAVED:")
-  (println @saved)
+  (prn @saved)
+  (println)
+  data)
+
+(defn pprint-saved-map [data]
+  (println "SAVED:")
+  (pprint @saved)
   (println)
   data)
 
