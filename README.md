@@ -29,8 +29,8 @@ you [q]uit. You can also e[x]it and return just the current item.
 
 As mentioned, you can [p]rint the path to current data. You can also print
 [c]urrent data (useful when you want to see it untruncated), print the [m]ap
-of saved data, or print [h]elp to get a reminder of these commands. Capitalize
-any of the printing commands to get a pretty-printed version.
+of saved data, or print [h]elp to get a reminder of these commands. Capital
+C and M give you pretty-printed versions of current and saved data.
 
 You can also move [b]ackward or [f]orward in time, or move [u]p a level, or jump
 back to the original [r]oot, or use [!] (function) to call an arbitrary
