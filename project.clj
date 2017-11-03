@@ -10,9 +10,9 @@
                         :compiler {:output-to "war/javascripts/main.js"  ; default: target/cljsbuild-main.js
                                    :optimizations :whitespace
                                    :pretty-print true}}]}
+  :lein-release {:deploy-via :clojars}
   :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]
                                   [org.clojure/tools.nrepl "0.2.10"]
-                                  [com.cemerick/piggieback "0.2.2"]
-                                  #_[org.clojure/tools.reader "1.0.5"]]
+                                  [com.cemerick/piggieback "0.2.2"]]
 
                    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}})
