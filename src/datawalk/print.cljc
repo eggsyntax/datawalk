@@ -22,10 +22,16 @@
   [v]
   (if (string? v) (str "\"" v "\"") v))
 
+(defn- ends-in-nl? [s] (= (last (str s)) \newline))
+
 (defn- limit-left
-  "Ensure that string s doesn't exceed n chars"
+  "Ensure that string s doesn't exceed n chars. Preserve newline."
   [n s]
-  (subs (str s) 0 (min n (count (str s)))))
+  (let [short-s (subs (str s) 0 (min n (count (str s))))]
+    (if (and (ends-in-nl? s)
+             (not (ends-in-nl? short-s)))
+      (str short-s "\n")
+      short-s)))
 
 (defn- limit-right
   "Ensure that string s doesn't exceed n chars; chops from right"
@@ -34,13 +40,6 @@
         slen (count s)
         cutoff (min n slen)]
     (subs s (- slen cutoff) slen)))
-
-(defn limitln
-  ([n s]
-   (limitln n s true))
-  ([n s from-left?]
-   (let [limit (if from-left? limit-left limit-right)]
-     (str (limit n s) "\n"))))
 
 (defn- is-seqable?
   "seqable? is added in clj 1.9 -- using this roughly equivalent fn for
@@ -53,45 +52,92 @@
       #?(:clj (catch IllegalArgumentException e nil)
          :cljs (catch js/Error e nil)))))
 
-(defn to-string
-  "Specialized pretty-printer for printing our sequences of things with numbers prepended"
+(defn limitln
+  ([n s]
+   (limitln n s true))
+  ([n s from-left?]
+   (let [limit (if from-left? limit-left limit-right)]
+     (str (limit n s)))))
+
+(defprotocol Datawalk-Stringable
+  "Describes how a type of thing should stringify itself for datawalk.
+  Implementations should work in both clj and cljs (cl-format is useful for
+  this). Output will be chopped off at max-line-length characters, and should
+  be designed accordingly."
+  (dw-to-string [data] [data top-level] "convert to a string for datawalk"))
+
+(defn stringify-seq-item-numbered [index item]
+  (let [format-s (str "~2,'0D. ~A")]
+    (limitln (:max-line-length @config)
+             (cl-format nil  "~2,'0D. ~A\n" index (quote-strings
+                                                 (dw-to-string item))))))
+
+(defn stringify-seq-item [_ item] ; ignore index
+  (limitln (:max-line-length @config) (dw-to-string item)))
+
+(defn stringify-seq
+  "For each item, print it, chopped at max-line-length chars, and optionally
+  prepended with an index number (4 chars)."
+  ([data]
+   (stringify-seq data false))
+  ([data top-level]
+   (map-indexed (if top-level
+                  stringify-seq-item-numbered
+                  stringify-seq-item)
+                (take (:max-items @config) data))))
+
+(defn stringify-kv [format-s index item]
+  (let [[k v] item]
+    (limitln (:max-line-length @config)
+             (cl-format nil
+                        format-s
+                        index
+                        (limit-right (:max-key-length @config) (dw-to-string k))
+                        (dw-to-string v)))))
+
+(defn stringify-map
+  "For each kv pair, stringify k and v, and print them colon-separated, chopped
+  at max-line-length chars, and (if top-level?) prepended with an index number
+  (4 chars)."
+  ([data]
+   (stringify-map data false))
+  ([data top-level?]
+   (let [some-data (take (:max-items @config) data)
+         longest-key (longest-length (keys some-data))]
+     (if top-level?
+       (let [format-s (str "~2,'0D. ~" longest-key "A : ~A\n")]
+         (map-indexed (partial stringify-kv format-s) some-data))
+       (let [format-s (str "~A ~A ")] ; extra space between kv pairs
+         (map #(apply cl-format nil format-s %) some-data))))))
+
+(extend-protocol Datawalk-Stringable
+  Object
+  (dw-to-string
+    ([data] (limitln (:max-line-length @config) data))
+    ([data top-level] (limitln (:max-line-length @config) data)))
+  java.util.Map
+  (dw-to-string
+    ([data] (stringify-map data))
+    ([data top-level] (stringify-map data top-level)))
+  clojure.lang.Seqable
+  (dw-to-string
+    ([data] (stringify-seq data))
+    ([data top-level] (stringify-seq data top-level)))
+  nil
+  (dw-to-string
+    ([data] "")
+    ([data top-level] ""))
+  )
+
+(defn to-string-new
   [data]
   (dw-to-string data :top-level)
   )
 
 (def to-string to-string-new)
 
-;; TODO THINK as I build protocols for other datatypes - json, datomic, etc -
-;;      it'll probably entail extra dependencies. Consider creating 2 builds,
-;;      one with minimal dependencies and one that's batteries-included &
-;;      has protocols for a bunch of datatypes.
-;; TODO when viewing a map entry, we only see the val rather than "key: val"
-#_(defn to-string
-    "Specialized pretty-printer for printing our sequences of things with numbers prepended"
-    [data]
-    ;; (println "data =" data)
-    (cond (string? data) ; strings masquerade as seqs, so we handle separately
-          ,  (quote-strings data)
-          (seqable? data)
-          ,  (map-indexed
-              (fn [index item]
-                ;; data is a seq of items...
-                (cond
-                  (sequential? data)
-                  ,  (limitln *max-line-length*
-                              (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
-                  (set? data)
-                  ,  (limitln *max-line-length*
-                              (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
-                  :else
-                  ,  (limitln *max-line-length*
-                              (cl-format nil "~2,'0D. (no-prnt-prtcl ~A) ~A" index (type item) (quote-strings item)))))
-              (take *max-items* data))
-          :else ; unhandled singular type
-          ,   (str " " data)))
-
 (defn to-debug-string [x]
-  (if (and (seqable? x) (not (string? x)))
+  (if (and (is-seqable? x) (not (string? x)))
     (map (partial limitln (:max-line-length @config)) x)
     (limitln (:max-line-length @config) x)))
 
