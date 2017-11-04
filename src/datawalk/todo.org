@@ -1,3 +1,36 @@
+* TODO automatically deref references?
+** Ideal solution:
+   1) Works correctly with forward & backward
+   2) Works properly with up.
+      - "Up" should lift back up out of the atom?
+   3) Works correctly with path
+      - What does that even mean? A deref step means `get-in` will break anyway.
+      - And can't be replaced with `->` because that doesn't work for eg ints
+   4) Seems natural to users
+** Options:
+*** Deref is an ordinary `drill` step
+**** 1, 2, 4 - breaks 3 (by default)
+*** Deref is ordinary `drill` but breaks path
+**** 1, 2, 3, 4?
+**** Change root?
+***** Might require a bunch of special handling
+**** Maybe...you're in a special mode/state when inside a derefable, with temp root & a bit of modified behavior?
+*** Deref is a special command
+**** 1, 2, 3?, 4
+*** Deref is implicit, you never see `atom`
+**** ?
+*** Deref is a printing affordance only, can't drill
+**** ?
+** Should `drill` be a protocol?
+** note that some derefables will cause problems, since they don't currently contain vals.
+*** But `deref` optionally takes a timeout & a timeout-val; that should solve.
+** What's derefable? @ref/@agent/@var/@atom/@delay/@future/@promise
+** Detecting derefability:
+*** (partial satisfies? IDeref)
+*** #(instance? Atom %)
+*** #(satisfies? IDeref %)
+** Togglable setting for deref behavior?
+* TODO ensure lazy seqs are realized before stringifying!
 * TODO change printing to protocol so that users can extend (see protocols branch)
 ** In progress, see `protocols` branch
 * TODO printing keys -- if namespaced keyword & longer than max-line-length, take `name` before limiting
@@ -5,15 +38,18 @@
 * TODO add example data (& instructions) - maybe with core/demo fn for ease
 * TODO need some easy way to access state from core so users don't need to require multiple nss
 * TODO handle java.lang.IndexOutOfBoundsException (& JS equivalent) when drilling
-* TODO automatically deref references?
+* TODO THINK
+** As I build protocols for other datatypes - json, datomic, etc - it'll probably entail extra dependencies.
+** Consider creating 2 builds, one with minimal dependencies and one that's batteries-included & has protocols for a bunch of datatypes.
 * Commands:
-** TODO split `c` into prn and pprint
+** TODO commands for find-key, find-val? g)rep
+** DONE split `c` into prn and pprint
 *** TODO Consider general variants of printing cmds, where capital means pprint
 **** Could handle it at the `parse` level, where capital letters are lowercased & a flag is set to indicate "special" or "variant"
-** TODO do I possibly want a command to save current to a named var? (eg d)ef )
-** TODO commands for find-key, find-val? g)rep
 ** TODO change certain commands to mnemonic symbols? I'm thinking < and > for backward/forward, maybe ^ for up.
 ** TODO consider: `t` for type
 ** TODO consider: map and/or filter commands
+** TODO do I possibly want a command to save current to a named var? (eg d)ef )
+** TODO commands to page through when > max-items? May be out of scope.
 * TODO Find or build a way to generalize `read-line` across environments.
 ** @mfikes ABIO lib might help.
