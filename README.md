@@ -50,7 +50,7 @@ not and I'll try to change that. I hope you find it as useful as I have.
 
 Leiningen:
 ```
-[datawalk "0.1.4-SNAPSHOT"]
+[datawalk "0.1.5-SNAPSHOT"]
 ```
 
 Details at https://clojars.org/datawalk
