@@ -93,7 +93,7 @@
         ,   (str " " data)))
 
 (defn to-debug-string [x]
-  (if (and (seqable? x) (not (string? x)))
+  (if (and (is-seqable? x) (not (string? x)))
     (map (partial limitln (:max-line-length @config)) x)
     (limitln (:max-line-length @config) x)))
 
