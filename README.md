@@ -48,6 +48,11 @@ not and I'll try to change that. I hope you find it as useful as I have.
 
 ## Installation:
 
+NOTE: datawalk currently requires that you use the most up-to-date versions of
+Clojure and ClojureScript (at least Clojure 1.9.0-beta2 and ClojureScript
+1.9.46). I'm planning to backport so that it works with earlier versions, but
+haven't had a chance yet.
+
 Leiningen:
 ```
 [datawalk "0.1.5-SNAPSHOT"]
