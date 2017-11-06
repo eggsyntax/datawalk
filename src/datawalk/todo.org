@@ -33,6 +33,8 @@
 * TODO ensure lazy seqs are realized before stringifying!
 * TODO change printing to protocol so that users can extend (see protocols branch)
 ** In progress, see `protocols` branch
+* TODO get-in doesn't always work -- it fails on lists (w/ numeric indices). Somehow I never noticed...
+** Convert all strings to vectors? But useless when user wants to exit repl and call get-in :/
 * TODO printing keys -- if namespaced keyword & longer than max-line-length, take `name` before limiting
 ** At (limit-right (:max-key-length @config) k)
 * TODO add example data (& instructions) - maybe with core/demo fn for ease
