@@ -1,4 +1,4 @@
-(defproject datawalk "0.1.6-SNAPSHOT"
+(defproject datawalk "0.1.6"
   :description "A single-purpose tool for rapid REPL exploration of complex data structures"
   :url "https://github.com/eggsyntax/datawalk"
   :license {:name "Eclipse Public License"
