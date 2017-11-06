@@ -1,4 +1,4 @@
-(defproject datawalk "0.1.7"
+(defproject datawalk "0.1.8-SNAPSHOT"
   :description "A single-purpose tool for rapid REPL exploration of complex data structures"
   :url "https://github.com/eggsyntax/datawalk"
   :license {:name "Eclipse Public License"
@@ -10,6 +10,7 @@
                         :compiler {:output-to "war/javascripts/main.js"  ; default: target/cljsbuild-main.js
                                    :optimizations :whitespace
                                    :pretty-print true}}]}
+  :lein-release {:deploy-via :lein-install}
   :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]
                                   [org.clojure/tools.nrepl "0.2.10"]
                                   [com.cemerick/piggieback "0.2.2"]]
