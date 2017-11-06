@@ -55,15 +55,16 @@
 
 (defn datawalk
   "Run a single step of exploration. Inner fn called by both `repl` and `w`.
-  Takes a data structure to act on, and input to parse and act on."
+  Takes a data structure to act on, and input to parse and act on. Both prints
+  and returns the new value of current data."
   [data in]
-  (when (:debug-mode @pr/config) (print-globals))
   (flush)
   (let [f (ps/parse in)
         next-data (if f (f data) data)]
     ;; We store data in an atom only so that it can be referred
     ;; to elsewhere; we don't need it in this fn.
     (reset! dw/data next-data)
+    (when (:debug-mode @pr/config) (print-globals))
     (pr/print-data next-data)
     (flush)
     (when (and
@@ -90,7 +91,6 @@
      (pr/maybe-initialize-config)
      (pr/print-data d)
      (loop [data d]
-       (when (:debug-mode @pr/config) (print-globals))
        (print prompt)
        (flush) ; no-op in cljs
        (let [in (read-input)]

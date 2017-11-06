@@ -21,7 +21,8 @@ item) plus enter.
 
 Often the reason for drilling down at the REPL is to determine a path to pass to
 `get-in`, so datawalk will track and [p]rint the path from the original root to
-the level you're on.
+the level you're on (as long as it's a viable get-in path, which it's not in the
+case of sets and lists).
 
 At any point in this process, you can [s]ave the current item or sa[v]e the
 path (from root to item) into a map of saved items which will be returned when
@@ -50,7 +51,7 @@ not and I'll try to change that. I hope you find it as useful as I have.
 
 Leiningen:
 ```
-[datawalk "0.1.4-SNAPSHOT"]
+[datawalk "0.1.9"]
 ```
 
 Details at https://clojars.org/datawalk

@@ -71,8 +71,7 @@
             (swap! paths assoc next-data next-path)
             next-data)
         (map? data)
-        , (let [ks (keys data)
-                k (nth ks n)
+        , (let [k (nth (keys data) n)
                 ;; _ (println "conjing (in map) onto" (type (@paths data)))
                 ;; Alternate option, if I wanted to print a MapEntry instead of
                 ;; just printing its value (would also require mapentry
@@ -80,7 +79,7 @@
                 ;; next-data (clojure.lang.MapEntry. k (get data k))
                 next-data (get data k)
                 next-path (conj (@paths data) k)]
-            ;; (println "k:" k)
+            ;; (println "next-path:" next-path)
             (swap! paths assoc (u/not-set next-data) next-path)
             next-data)
         :else ; not drillable; no-op
