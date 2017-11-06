@@ -1,3 +1,7 @@
+* TODO script/tests
+* TODO BUG path addition fails on sets
+** (as it sorta-should, since get-in won't work)
+** Decide on behavior
 * TODO automatically deref references?
 ** Ideal solution:
    1) Works correctly with forward & backward
