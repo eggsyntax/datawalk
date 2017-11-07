@@ -63,14 +63,27 @@
   "Describes how a type of thing should stringify itself for datawalk.
   Implementations should work in both clj and cljs (cl-format is useful for
   this). Output will be chopped off at max-line-length characters, and should
-  be designed accordingly."
+  be designed accordingly. dw-to-string should have two arities, one which
+  prints the item by itself, in such a way that it can be embedded in a line,
+  and one which prints for the topmost level. The latter mostly only applies
+  to items which are in some sense seqable collections, and the convention
+  for their top-level behavior is that each member of the collection is
+  printed on a separate line, preceded by a number which should represent
+  the nth member. See stringify-seq and stringify-map for examples. For
+  items which are not conceptually a seqable collection, the two arities
+  can and generally should be identical."
   (dw-to-string [data] [data top-level] "convert to a string for datawalk"))
 
 (defn stringify-seq-item-numbered [index item]
   (let [format-s (str "~2,'0D. ~A")]
     (limitln (:max-line-length @config)
-             (cl-format nil  "~2,'0D. ~A\n" index (quote-strings
-                                                 (dw-to-string item))))))
+             ;; (cl-format nil  "~2,'0D. ~A\n" index (quote-strings
+             ;;                                     (dw-to-string item))))))
+             ;; TODO Calling dw-to-string on an int has the problem that it
+             ;; wraps sub-items in quotes. Don't THINK it's the behavior I want.
+             ;; This is the wrong level to be quoting strings at, because it'll
+             ;; ALWAYS be a string by the time quote-strings sees it...
+             (cl-format nil  "~2,'0D. ~A\n" index (dw-to-string item)))))
 
 (defn stringify-seq-item [_ item] ; ignore index
   (limitln (:max-line-length @config) (dw-to-string item)))
