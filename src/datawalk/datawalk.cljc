@@ -55,6 +55,7 @@
 (defn no-op [data]
   data)
 
+;; TODO remove some repetition
 (defn drill
   "Given a number n, drill down to that numbered item"
   [n data]
