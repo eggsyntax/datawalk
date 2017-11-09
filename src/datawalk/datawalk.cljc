@@ -103,7 +103,6 @@
     (catch #?(:clj IndexOutOfBoundsException
               :cljs js/Error) e
       (do (println "\nThere is no item numbered" n "in the list of current data. Try again.\n")
-          (swap! the-past pop)
           data))))
 
 (defn quit [data]
