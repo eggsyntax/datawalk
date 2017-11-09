@@ -16,7 +16,7 @@
 ;; - Goals:
 ;;   - Get some fspecs in there -- hmm, can I access before-and-after values
 ;;     for the state atoms?
-;;   - This is based on an even more special-purpose program I wrote to explore
+;;   - This is based on a more special-purpose program I wrote to explore
 ;;     Datomic data, which took heavy advantage of the laziness of Datomic's
 ;;     EntityMap. I'd ideally like to bring some of that over to datawalk at
 ;;     some point.

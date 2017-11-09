@@ -40,7 +40,7 @@
   (is (= expected-saved (gval dw/saved))))
 
 (defn- whitespace-normalized [string]
-  (s/trim (s/replace string #"\s+" " ")))
+  (s/trim (s/replace string #"\s+" "")))
 
 (defn matches-ish
   "True if two strings differ by at most whitespace"
@@ -59,8 +59,8 @@
     (prn "whit-nor")
     (prn (whitespace-normalized result))
     (println)
-    (is (= (whitespace-normalized result)
-           (whitespace-normalized expected-result))))
+    (is (= (whitespace-normalized expected-result)
+           (whitespace-normalized result))))
 
   #_(is (= expected-result (with-out-str (dw-call data steps)))))
 
@@ -97,14 +97,36 @@
 (deftest time-travel-test
   (expect {1 2 3 [4 {5 6}]}
           [1 1 'b 'f 'f 0 'b 'b 'b 'b 1 1]
-          {5 6}))
+          {5 6})
+  (expect {1 '(2 3) 7 [4 {5 6}]}
+          [0 1 'b 'b]
+          {1 '(2 3) 7 [4 {5 6}]})
+  (expect {1 '(2 3) 7 [4 {5 6}]}
+          [1 1 0 'f 'f 'f 'b 'b 'b]
+          {1 '(2 3) 7 [4 {5 6}]})
+  (expect {1 '(2 3) 7 [4 {5 6}]}
+          ['b 'b 'b]
+          {1 '(2 3) 7 [4 {5 6}]})
+  (expect {1 '(2 3) 7 [4 {5 6}]}
+          [1 'b 'f 'b 'f 'b]
+          {1 '(2 3) 7 [4 {5 6}]}))
 
 (deftest up-test
   (expect-saved {1 2 3 [4 {5 6}]}
                 [1 1 0 'p 'v 'u 'u 'u 's 'p 'v]
                 {1 [3 1 5], 2 {1 2, 3 [4 {5 6}]}, 3 []}))
 
-;; Examine string output. Brittle, but necessary for the
+(deftest refable-test
+  (expect [1 (atom {1 [2 (atom 3)]}) 4]
+          [1 0 0 1 0]
+          3)
+  (let [blocking-refable (future (Thread/sleep 200) :done)]
+    (look-at blocking-refable)
+    (is (not= (datawalk blocking-refable "0") :done))
+    (Thread/sleep 200)
+    (is (= (datawalk blocking-refable "0") :done))))
+
+;; Examine string output. Brittle, but necessary if we want to test the
 ;; print-centric tangential commands.
 (deftest map-str-test
   (expect-str {1 2 3 [4 {5 6}]}

@@ -149,6 +149,15 @@
 
 (def to-string to-string-new)
 
+;; TODO need protocol for derefables. Here's the handling in master:
+  ;; (instance? clojure.lang.IDeref data)
+  ;; ;; We number derefables, even though they're non-sequential, to help
+  ;; ;; indicate that we can drill into them.
+  ;; ,  (limitln (:max-line-length @config)
+  ;;             (cl-format nil "00. ~A" (quote-strings data)))
+  ;; :else ; Nothing we handle specially -- just `str` it.
+  ;; ,   (str " " data)
+
 (defn to-debug-string [x]
   (if (and (is-seqable? x) (not (string? x)))
     (map (partial limitln (:max-line-length @config)) x)
