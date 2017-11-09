@@ -85,12 +85,20 @@
                 ,  (limitln (:max-line-length @config)
                             (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
                 :else
-                ;; TODO get rid of "no-prnt-prtcl" -- maybe a `?`?
                 ,  (limitln (:max-line-length @config)
                             (cl-format nil "~2,'0D. ~A" index (quote-strings item)))))
             (take (:max-items @config) data))
-        :else ; unhandled singular type
-        ,   (str " " data)))
+        :else ; singular type
+        (cond
+          ;; TODO remember to handle derefables in the protocols branch too
+          (instance? clojure.lang.IDeref data)
+          ;; We number derefables, even though they're non-sequential, to help
+          ;; indicate that we can drill into them.
+          ,  (limitln (:max-line-length @config)
+                      (cl-format nil "00. ~A" (quote-strings data)))
+          :else ; Nothing we handle specially -- just `str` it.
+          ,   (str " " data)
+          )))
 
 (defn to-debug-string [x]
   (if (and (is-seqable? x) (not (string? x)))

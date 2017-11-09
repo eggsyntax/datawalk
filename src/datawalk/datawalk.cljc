@@ -64,7 +64,6 @@
     (cond
       (sequential? data)
       , (let [next-data (nth data n)
-                 ;; _ (println "conjing (in seq) onto" (type @paths))
               next-path (conj (@paths data) n)]
           (swap! paths assoc (u/not-set next-data) next-path)
           next-data)
@@ -75,11 +74,6 @@
           next-data)
       (map? data)
       , (let [k (nth (keys data) n)
-                 ;; _ (println "conjing (in map) onto" (type (@paths data)))
-                 ;; Alternate option, if I wanted to print a MapEntry instead of
-                 ;; just printing its value (would also require mapentry
-                 ;; protocol). Not sure which is more useful.
-                 ;; next-data (clojure.lang.MapEntry. k (get data k))
               next-data (get data k)
               next-path (conj (@paths data) k)]
              ;; (println "next-path:" next-path)
@@ -89,8 +83,7 @@
       ;; Drilling into a future/promise dereferences it with a fast
       ;; timeout so we don't block if it doesn't contain a value yet.
       , (if-let [next-data (deref data 100 nil)]
-          (do (prn "blocking-deref")
-              (swap! paths assoc
+          (do (swap! paths assoc
                      (u/not-set next-data)
                      (conj (@paths data) 'deref))
               next-data)
@@ -98,20 +91,19 @@
               data))
       ;; Otherwise it's a non-blocking refable, so we can just deref it
       (instance? clojure.lang.IDeref data)
-      ;; Drilling into a future/promise dereferences it
+      ;; Drilling into a derefable dereferences it
       , (let [next-data (deref data)]
-          (prn "regular-deref")
           (swap! paths assoc
                  (u/not-set next-data)
                  (conj (@paths data) 'deref))
           next-data)
       :else ; not drillable; no-op
-      , (do (println "Can't drill into a" (type data))
-            (swap! the-past pop) ; we haven't moved; avoid dup
+      , (do (println "Can't drill into a" (type data) "\n")
             data))
     (catch #?(:clj IndexOutOfBoundsException
               :cljs js/Error) e
       (do (println "\nThere is no item numbered" n "in the list of current data. Try again.\n")
+          (swap! the-past pop)
           data))))
 
 (defn quit [data]
