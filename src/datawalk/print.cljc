@@ -1,6 +1,7 @@
 (ns datawalk.print
   ;; We use cl-format because cljs doesn't have core fn format
-  (:require [clojure.pprint :refer [cl-format]]))
+  (:require [clojure.pprint :refer [cl-format]]
+            [clojure.string :as string]))
 
 (def config (atom nil))
 
@@ -115,13 +116,28 @@
   ([data]
    (stringify-map data false))
   ([data top-level?]
-   (let [some-data (take (:max-items @config) data)
+   ;; (prn data)
+   (let [some-data (into {} (take (:max-items @config) data))
+         ;; _ (prn some-data)
          longest-key (longest-length (keys some-data))]
      (if top-level?
        (let [format-s (str "~2,'0D. ~" longest-key "A : ~A\n")]
          (map-indexed (partial stringify-kv format-s) some-data))
        (let [format-s (str "~A ~A ")] ; extra space between kv pairs
-         (map #(apply cl-format nil format-s %) some-data))))))
+         (str "{" (string/join " "
+                               (map #(apply cl-format nil format-s %)
+                                    data)) "}"))))))
+
+(defn stringify-derefable
+  "At the top level, derefables pretend to be sequences -- ie they're printed
+  with a number in front of them -- as an affordance to suggest to the user
+  that they can be drilled into."
+  ([data]
+   (stringify-derefable data false))
+  ([data top-level?]
+   (let [maybe-number (if top-level? "00. " "")
+         format-s (str maybe-number "~A")]
+     (cl-format nil format-s (quote-strings data)))))
 
 (extend-protocol Datawalk-Stringable
   Object
@@ -136,6 +152,10 @@
   (dw-to-string
     ([data] (stringify-seq data))
     ([data top-level] (stringify-seq data top-level)))
+  clojure.lang.IDeref
+  (dw-to-string
+    ([data] (stringify-derefable data))
+    ([data top-level] (stringify-derefable data top-level)))
   nil
   (dw-to-string
     ([data] "")
