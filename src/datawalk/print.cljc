@@ -69,8 +69,7 @@
                             (cl-format nil "~2,'0D. ~A" index (quote-strings item)))
                 ;; ...or a map of items (so item is a [k v])
                 (map? data)
-                ,  (let [
-                         ;; _ (println "item =" item)
+                ,  (let [;; _ (println "item =" item)
                          ;; _ (println "type =" (type item))
                          [k v] item
                          format-s (str "~2,'0D. ~"
@@ -91,14 +90,14 @@
         :else ; singular type
         (cond
           ;; TODO remember to handle derefables in the protocols branch too
-          (instance? clojure.lang.IDeref data)
+          #?(:clj (instance? clojure.lang.IDeref data)
+             :cljs (instance? cljs.core.Atom data))
           ;; We number derefables, even though they're non-sequential, to help
           ;; indicate that we can drill into them.
           ,  (limitln (:max-line-length @config)
                       (cl-format nil "00. ~A" (quote-strings data)))
           :else ; Nothing we handle specially -- just `str` it.
-          ,   (str " " data)
-          )))
+          ,   (str " " data))))
 
 (defn to-debug-string [x]
   (if (and (is-seqable? x) (not (string? x)))

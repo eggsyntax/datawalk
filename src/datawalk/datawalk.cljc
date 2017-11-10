@@ -55,55 +55,100 @@
 (defn no-op [data]
   data)
 
+;; TODO added a quick fix in 0.1.12 because there was an outstanding bug due
+;; to clj derefable protocols not being available in cljs. Find something more
+;; elegant ;P
+
 ;; TODO remove some repetition
-(defn drill
-  "Given a number n, drill down to that numbered item"
-  [n data]
-  ;; (println "drilling into" data)
-  (try
-    (cond
-      (sequential? data)
-      , (let [next-data (nth data n)
-              next-path (conj (@paths data) n)]
-          (swap! paths assoc (u/not-set next-data) next-path)
-          next-data)
-      (set? data)
-      , (let [next-data (nth (u/not-set data) n)
-              next-path (conj (@paths data) n)]
-          (swap! paths assoc next-data next-path)
-          next-data)
-      (map? data)
-      , (let [k (nth (keys data) n)
-              next-data (get data k)
-              next-path (conj (@paths data) k)]
-             ;; (println "next-path:" next-path)
-          (swap! paths assoc (u/not-set next-data) next-path)
-          next-data)
-      (instance? clojure.lang.IBlockingDeref data)
-      ;; Drilling into a future/promise dereferences it with a fast
-      ;; timeout so we don't block if it doesn't contain a value yet.
-      , (if-let [next-data (deref data 100 nil)]
-          (do (swap! paths assoc
-                     (u/not-set next-data)
-                     (conj (@paths data) 'deref))
-              next-data)
-          (do (prn "Can't deref, no data yet!")
-              data))
-      ;; Otherwise it's a non-blocking refable, so we can just deref it
-      (instance? clojure.lang.IDeref data)
-      ;; Drilling into a derefable dereferences it
-      , (let [next-data (deref data)]
-          (swap! paths assoc
-                 (u/not-set next-data)
-                 (conj (@paths data) 'deref))
-          next-data)
-      :else ; not drillable; no-op
-      , (do (println "Can't drill into a" (type data) "\n")
-            data))
-    (catch #?(:clj IndexOutOfBoundsException
-              :cljs js/Error) e
-      (do (println "\nThere is no item numbered" n "in the list of current data. Try again.\n")
-          data))))
+#?(:clj
+   (defn drill
+     "Given a number n, drill down to that numbered item"
+     [n data]
+   ;; (println "drilling into" data)
+     (try
+       (cond
+         (sequential? data)
+         , (let [next-data (nth data n)
+                 next-path (conj (@paths data) n)]
+             (swap! paths assoc (u/not-set next-data) next-path)
+             next-data)
+         (set? data)
+         , (let [next-data (nth (u/not-set data) n)
+                 next-path (conj (@paths data) n)]
+             (swap! paths assoc next-data next-path)
+             next-data)
+         (map? data)
+         , (let [k (nth (keys data) n)
+                 next-data (get data k)
+                 next-path (conj (@paths data) k)]
+           ;; (println "next-path:" next-path)
+             (swap! paths assoc (u/not-set next-data) next-path)
+             next-data)
+         (instance? clojure.lang.IBlockingDeref data)
+       ;; Drilling into a future/promise dereferences it with a fast
+       ;; timeout so we don't block if it doesn't contain a value yet.
+         , (if-let [next-data (deref data 100 nil)]
+             (do (swap! paths assoc
+                        (u/not-set next-data)
+                        (conj (@paths data) 'deref))
+                 next-data)
+             (do (prn "Can't deref, no data yet!")
+                 data))
+       ;; Otherwise it's a non-blocking refable, so we can just deref it
+         (instance? clojure.lang.IDeref data)
+       ;; Drilling into a derefable dereferences it
+         , (let [next-data (deref data)]
+             (swap! paths assoc
+                    (u/not-set next-data)
+                    (conj (@paths data) 'deref))
+             next-data)
+         :else ; not drillable; no-op
+         , (do (println "Can't drill into a" (type data) "\n")
+               data))
+       (catch #?(:clj IndexOutOfBoundsException
+                 :cljs js/Error) e
+         (do (println "\nThere is no item numbered" n "in the list of current data. Try again.\n")
+             data))))
+
+   :cljs
+   (defn drill
+     "Given a number n, drill down to that numbered item"
+     [n data]
+   ;; (println "drilling into" data)
+     (try
+       (cond
+         (sequential? data)
+         , (let [next-data (nth data n)
+                 next-path (conj (@paths data) n)]
+             (swap! paths assoc (u/not-set next-data) next-path)
+             next-data)
+         (set? data)
+         , (let [next-data (nth (u/not-set data) n)
+                 next-path (conj (@paths data) n)]
+             (swap! paths assoc next-data next-path)
+             next-data)
+         (map? data)
+         , (let [k (nth (keys data) n)
+                 next-data (get data k)
+                 next-path (conj (@paths data) k)]
+           ;; (println "next-path:" next-path)
+             (swap! paths assoc (u/not-set next-data) next-path)
+             next-data)
+         (instance? cljs.core/Atom data)
+       ;; Drilling into a derefable dereferences it
+         , (let [next-data (deref data)]
+             (prn "drilling into atom")
+             (swap! paths assoc
+                    (u/not-set next-data)
+                    (conj (@paths data) 'deref))
+             next-data)
+         :else ; not drillable; no-op
+         , (do (println "Can't drill into a" (type data) "\n")
+               data))
+       (catch #?(:clj IndexOutOfBoundsException
+                 :cljs js/Error) e
+         (do (println "\nThere is no item numbered" n "in the list of current data. Try again.\n")
+             data)))))
 
 (defn quit [data]
   ;; Returns saved data
