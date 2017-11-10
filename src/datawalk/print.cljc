@@ -123,10 +123,7 @@
      (if top-level?
        (let [format-s (str "~2,'0D. ~" longest-key "A : ~A\n")]
          (map-indexed (partial stringify-kv format-s) some-data))
-       (let [format-s (str "~A ~A ")] ; extra space between kv pairs
-         (str "{" (string/join " "
-                               (map #(apply cl-format nil format-s %)
-                                    data)) "}"))))))
+       (str some-data)))))
 
 (defn stringify-derefable
   "At the top level, derefables pretend to be sequences -- ie they're printed
