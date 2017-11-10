@@ -78,12 +78,6 @@
 (defn stringify-seq-item-numbered [index item]
   (let [format-s (str "~2,'0D. ~A")]
     (limitln (:max-line-length @config)
-             ;; (cl-format nil  "~2,'0D. ~A\n" index (quote-strings
-             ;;                                     (dw-to-string item))))))
-             ;; TODO Calling dw-to-string on an int has the problem that it
-             ;; wraps sub-items in quotes. Don't THINK it's the behavior I want.
-             ;; This is the wrong level to be quoting strings at, because it'll
-             ;; ALWAYS be a string by the time quote-strings sees it...
              (cl-format nil  "~2,'0D. ~A\n" index (dw-to-string item)))))
 
 (defn stringify-seq-item [_ item] ; ignore index
@@ -136,6 +130,7 @@
          format-s (str maybe-number "~A")]
      (cl-format nil format-s (quote-strings data)))))
 
+;; TODO need one for set!!
 (extend-protocol Datawalk-Stringable
   Object
   (dw-to-string
