@@ -130,7 +130,16 @@
          format-s (str maybe-number "~A")]
      (cl-format nil format-s (quote-strings data)))))
 
-;; TODO need one for set!!
+(defn stringify-set
+  "Preserve the literal #{} representation"
+  ([data]
+   (stringify-set data false))
+  ([data top-level?]
+   (let [some-data (into #{} (take (:max-items @config) data))]
+     (if top-level?
+       (map-indexed #(cl-format nil "~2,'0D. ~A\n" %1 (quote-strings %2)) some-data)
+       (str data)))))
+
 (extend-protocol Datawalk-Stringable
   Object
   (dw-to-string
@@ -140,6 +149,10 @@
   (dw-to-string
     ([data] (stringify-map data))
     ([data top-level] (stringify-map data top-level)))
+  clojure.lang.IPersistentSet
+  (dw-to-string
+    ([data] (stringify-set data))
+    ([data top-level] (stringify-set data top-level)))
   clojure.lang.Seqable
   (dw-to-string
     ([data] (stringify-seq data))
@@ -154,21 +167,9 @@
     ([data top-level] ""))
   )
 
-(defn to-string-new
+(defn to-string
   [data]
-  (dw-to-string data :top-level)
-  )
-
-(def to-string to-string-new)
-
-;; TODO need protocol for derefables. Here's the handling in master:
-  ;; (instance? clojure.lang.IDeref data)
-  ;; ;; We number derefables, even though they're non-sequential, to help
-  ;; ;; indicate that we can drill into them.
-  ;; ,  (limitln (:max-line-length @config)
-  ;;             (cl-format nil "00. ~A" (quote-strings data)))
-  ;; :else ; Nothing we handle specially -- just `str` it.
-  ;; ,   (str " " data)
+  (dw-to-string data :top-level))
 
 (defn to-debug-string [x]
   (if (and (is-seqable? x) (not (string? x)))
