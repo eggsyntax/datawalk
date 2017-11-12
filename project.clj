@@ -3,7 +3,7 @@
   :url "https://github.com/eggsyntax/datawalk"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.9.0-beta2"]
+  :dependencies [[org.clojure/clojure "1.9.0-RC1"]
                  [org.clojure/clojurescript "1.9.908"]]
   :plugins [[lein-cljsbuild "1.1.7"]]
   :cljsbuild {:builds [{:source-paths ["src"]
