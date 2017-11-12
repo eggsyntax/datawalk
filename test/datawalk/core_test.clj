@@ -2,8 +2,8 @@
   "Integration tests, really. Does a series of walks through data & verifies
   that things are as they should be."
   (:require [clojure.string :as s]
-            [clojure.test :refer :all]
-            [datawalk.core :refer :all]
+            [clojure.test :refer [is deftest testing run-tests]]
+            [datawalk.core :refer [look-at w datawalk]]
             [datawalk.datawalk :as dw]))
 
 
@@ -120,11 +120,12 @@
   (expect [1 (atom {1 [2 (atom 3)]}) 4]
           [1 0 0 1 0]
           3)
-  (let [blocking-refable (future (Thread/sleep 200) :done)]
-    (look-at blocking-refable)
-    (is (not= (datawalk blocking-refable "0") :done))
-    (Thread/sleep 200)
-    (is (= (datawalk blocking-refable "0") :done))))
+  #?(:clj ; blocking derefables are clj-only
+     (let [blocking-refable (future (Thread/sleep 200) :done)]
+     (look-at blocking-refable)
+     (is (not= (datawalk blocking-refable "0") :done))
+     (Thread/sleep 200)
+     (is (= (datawalk blocking-refable "0") :done)))))
 
 ;; Examine string output. Brittle, but necessary if we want to test the
 ;; print-centric tangential commands.
