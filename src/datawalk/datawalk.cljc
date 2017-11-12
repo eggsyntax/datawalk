@@ -82,11 +82,12 @@
       (instance? clojure.lang.IBlockingDeref data)
       ;; Drilling into a future/promise dereferences it with a fast
       ;; timeout so we don't block if it doesn't contain a value yet.
-      , (if-let [next-data (deref data 100 nil)]
-          (do (swap! paths assoc
-                     (u/not-set next-data)
-                     (conj (@paths data) 'deref))
-              next-data)
+      , (if (realized? data)
+          (let [next-data (deref data)]
+            (do (swap! paths assoc
+                       (u/not-set next-data)
+                       (conj (@paths data) 'deref))
+                next-data))
           (do (prn "Can't deref, no data yet!")
               data))
       ;; Otherwise it's a non-blocking refable, so we can just deref it
