@@ -113,9 +113,9 @@ Now that you've initialized the data, use w to continue.
 
 (defmacro w
   "Take a single step through the data, using any of the commands. For example,
-  [datawalk] > (w 2) ; drill to item 2
-  [datawalk] > (w p) ; print path to current data
-  [datawalk] > (w b) ; step backward
+  user> (w 2) ; drill to item 2
+  user> (w p) ; print path to current data
+  user> (w b) ; step backward
   Use (w h) to get a summary of available commands. w presumes you've already
   called `look-at` once to specify what data is being explored.
   Usable in all environments."
