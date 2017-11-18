@@ -1,8 +1,8 @@
-* TODO script/tests
+* TODO get tests working in cljs
 * TODO BUG path addition fails on sets
 ** (as it sorta-should, since get-in won't work)
-** Decide on behavior
-* TODO automatically deref references?
+** Decide on behavior for sets, lists, and derefables.
+* DONE automatically deref references?
 ** Ideal solution:
    1) Works correctly with forward & backward
    2) Works properly with up.
@@ -34,7 +34,7 @@
 *** #(instance? Atom %)
 *** #(satisfies? IDeref %)
 ** Togglable setting for deref behavior?
-* TODO ensure lazy seqs are realized before stringifying!
+* DONE ensure lazy seqs are realized before stringifying! (only a problem w/ protocols?)
 * TODO change printing to protocol so that users can extend (see protocols branch)
 ** In progress, see `protocols` branch
 * TODO get-in doesn't always work -- it fails on lists (w/ numeric indices). Somehow I never noticed...
