@@ -4,7 +4,8 @@
   (:require [clojure.string :as s]
             [clojure.test :refer [is deftest testing run-tests]]
             [datawalk.core :refer [look-at w datawalk]]
-            [datawalk.datawalk :as dw]))
+            [datawalk.datawalk :as dw]
+            [datawalk.print :as pr]))
 
 
 ;; We're going to use the underlying `datawalk` fn rather than add complexity by
@@ -120,6 +121,7 @@
   (expect [1 (atom {1 [2 (atom 3)]}) 4]
           [1 0 0 1 0]
           3)
+
   #?(:clj ; blocking derefables are clj-only
      (let [blocking-refable (future (Thread/sleep 200) :done)]
      (look-at blocking-refable)
@@ -133,3 +135,6 @@
   (expect-str {1 2 3 [4 {5 6}]}
               [1 1 'p]
               "(00. 4 01. {5 6} ) (00. 5: 6 ) PATH: [3 1] (00. 5: 6 )"))
+
+;; (deftest eagerly-test
+;;   (is (= (pr/eagerly))))

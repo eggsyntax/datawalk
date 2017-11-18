@@ -60,6 +60,16 @@
    (let [limit (if from-left? limit-left limit-right)]
      (str (limit n s)))))
 
+(defn eagerly
+  "Sometimes dw-to-string encounters lazy sequences; those should be made eager
+  for printing. We call `into` twice to compensate for the variation in where
+  different sequence types conj onto (at some cost to performance)."
+  [x]
+  (if (is-seqable? x)
+    (let [emp (empty x)]
+      (into emp (into emp x)))
+    x))
+
 (defprotocol Datawalk-Stringable
   "Describes how a type of thing should stringify itself for datawalk.
   Implementations should work in both clj and cljs (cl-format is useful for
@@ -89,10 +99,11 @@
   ([data]
    (stringify-seq data false))
   ([data top-level]
-   (map-indexed (if top-level
-                  stringify-seq-item-numbered
-                  stringify-seq-item)
-                (take (:max-items @config) data))))
+   (eagerly
+    (map-indexed (if top-level
+                   stringify-seq-item-numbered
+                   stringify-seq-item)
+                 (take (:max-items @config) data)))))
 
 (defn stringify-kv [format-s index item]
   (let [[k v] item]
@@ -116,7 +127,8 @@
          longest-key (longest-length (keys some-data))]
      (if top-level?
        (let [format-s (str "~2,'0D. ~" longest-key "A : ~A\n")]
-         (map-indexed (partial stringify-kv format-s) some-data))
+         (eagerly
+          (map-indexed (partial stringify-kv format-s) some-data)))
        (str some-data)))))
 
 (defn stringify-derefable
@@ -137,7 +149,7 @@
   ([data top-level?]
    (let [some-data (into #{} (take (:max-items @config) data))]
      (if top-level?
-       (map-indexed #(cl-format nil "~2,'0D. ~A\n" %1 (quote-strings %2)) some-data)
+       (eagerly (map-indexed #(cl-format nil "~2,'0D. ~A\n" %1 (quote-strings %2)) some-data))
        (str data)))))
 
 (extend-protocol Datawalk-Stringable
