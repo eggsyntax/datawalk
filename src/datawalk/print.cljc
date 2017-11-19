@@ -89,7 +89,7 @@
 (defn stringify-seq-item-numbered [index item]
   (let [format-s (str "~2,'0D. ~A")]
     (limitln (:max-line-length @config)
-             (cl-format nil  "~2,'0D.xxx ~A\n" index (dw-to-string item)))))
+             (cl-format nil  "~2,'0D. ~A\n" index (dw-to-string item)))))
 
 (defn stringify-seq-item [_ item] ; ignore index
   (limitln (:max-line-length @config) (dw-to-string item)))
