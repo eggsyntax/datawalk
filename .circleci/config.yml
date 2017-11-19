@@ -38,5 +38,11 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "project.clj" }}
 
-      # run tests!
-      - run: lein test
+      # run tests, build
+      - run: lein do test, uberjar
+
+      # Uberjar is probably fairly unnecessary, but in the interest of
+      # exercising more of CircleCI...
+      - store_artifacts: 
+          path: target/uberjar/cci-demo-clojure.jar 
+          destination: uberjar
