@@ -1,8 +1,9 @@
 (ns datawalk.core
-  (:require [datawalk.datawalk :as dw]
+  (:require [clojure.string :as string]
+            [datawalk.datawalk :as dw]
             [datawalk.print    :as pr]
             [datawalk.parse    :as ps]
-            [clojure.string :as string]
+
             ;; Maybe later, for attempting read-line in cljs
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt])

@@ -70,7 +70,7 @@
       (into emp (into emp x)))
     x))
 
-(defprotocol Datawalk-Stringable
+(defprotocol Datawalkable
   "Describes how a type of thing should stringify itself for datawalk.
   Implementations should work in both clj and cljs (cl-format is useful for
   this). Output will be chopped off at max-line-length characters, and should
@@ -83,7 +83,8 @@
   the nth member. See stringify-seq and stringify-map for examples. For
   items which are not conceptually a seqable collection, the two arities
   can and generally should be identical."
-  (dw-to-string [data] [data top-level] "convert to a string for datawalk"))
+  (dw-to-string [data] [data top-level] "convert to a string for datawalk")
+  (dw-drill [data] "drill down into one member of this data"))
 
 (defn stringify-seq-item-numbered [index item]
   (let [format-s (str "~2,'0D. ~A")]
@@ -152,7 +153,7 @@
        (eagerly (map-indexed #(cl-format nil "~2,'0D. ~A\n" %1 (quote-strings %2)) some-data))
        (str data)))))
 
-(extend-protocol Datawalk-Stringable
+(extend-protocol Datawalkable
   Object
   (dw-to-string
     ([data] (limitln (:max-line-length @config) data))
