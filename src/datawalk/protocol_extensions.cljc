@@ -2,7 +2,7 @@
   "Extend datawalk protocols to additional datatypes. This is done *only* for
   datatypes which are included as dependencies in the project, so that datawalk
   itself doesn't require dependencies which most users may not need."
-  (:require [datawalk.dw-protocol :refer [Datawalkable]]))
+  (:require [datawalk.dwprotocol :refer [Datawalkable]]))
 
 ;; TODO make note in readline: users please submit PRs for new extensions
 

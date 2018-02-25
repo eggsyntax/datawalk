@@ -1,4 +1,4 @@
-(ns datawalk.dw-protocol)
+(ns datawalk.dwprotocol)
 
 (defprotocol Datawalkable
   "Describes how a type of thing should stringify itself for datawalk.

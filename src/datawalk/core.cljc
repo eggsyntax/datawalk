@@ -1,6 +1,6 @@
 (ns datawalk.core
   (:require [clojure.string :as string]
-            [datawalk.dw-protocol :refer [Datawalkable dw-to-string]]
+            [datawalk.dwprotocol :refer [Datawalkable dw-to-string]]
             [datawalk.datawalk :as dw]
             [datawalk.print    :as pr]
             [datawalk.parse    :as ps]
@@ -8,7 +8,7 @@
             ;; Maybe later, for attempting read-line in cljs
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt])
-  ;; (:import datawalk.dw-protocol Datawalkable)
+  ;; (:import datawalk.dwprotocol Datawalkable)
   #?(:cljs (:require-macros [datawalk.core :refer [w]])))
 
 ;; Notes:

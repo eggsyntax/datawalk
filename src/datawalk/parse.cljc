@@ -1,7 +1,7 @@
 (ns datawalk.parse
   "Parses user input into a call to a fn in datawalk.datawalk"
   (:require [datawalk.datawalk :as dw]
-            [datawalk.dw-protocol :refer [dw-drill]]))
+            [datawalk.dwprotocol :refer [dw-drill]]))
 
 
 (defn read-int [s]

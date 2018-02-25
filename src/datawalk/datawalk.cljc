@@ -1,7 +1,7 @@
 (ns datawalk.datawalk
   "Transforms data"
   (:require [clojure.pprint :refer [pprint]]
-            [datawalk.dw-protocol :refer [Datawalkable dw-drill]]
+            [datawalk.dwprotocol :refer [Datawalkable dw-drill]]
             [datawalk.print :as pr]
             [datawalk.util :as u]))
 
