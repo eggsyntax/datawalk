@@ -1,5 +1,6 @@
 (ns datawalk.core
   (:require [clojure.string :as string]
+            [datawalk.dw-protocol :refer [Datawalkable dw-to-string]]
             [datawalk.datawalk :as dw]
             [datawalk.print    :as pr]
             [datawalk.parse    :as ps]
@@ -7,6 +8,7 @@
             ;; Maybe later, for attempting read-line in cljs
             #_[clojure.tools.reader :as rdr]
             #_[clojure.tools.reader.reader-types :as rdrt])
+  ;; (:import datawalk.dw-protocol Datawalkable)
   #?(:cljs (:require-macros [datawalk.core :refer [w]])))
 
 ;; Notes:
@@ -34,7 +36,6 @@
   (reset! dw/saved {})
   (reset! dw/the-past [])
   (reset! dw/the-future []))
-
 
 (defn print-globals [] (pr/print-globals  (@dw/paths @dw/data) @dw/saved @dw/the-past @dw/the-future))
 
