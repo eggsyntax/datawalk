@@ -124,6 +124,7 @@ Now that you've initialized the data, use w to continue.
   (let [string-args# (mapv str args)]
     `(if @dw/data
        (do (datawalk @dw/data ~@string-args#) ; updates state,
+
            nil) ; ignore return val (so it's not printed again)
        (println "No data to explore. Perhaps you haven't called look-at?"))))
 
@@ -133,5 +134,6 @@ Now that you've initialized the data, use w to continue.
   (repl {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
 
   ;; semi-interactive
-  (look-at {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}}))
+  (look-at {:a 1 :b {:c #{2 3 4} :d "5" :e [6 7 {:f "8" :g {:h :9}}]}})
   ;; followed by any number of calls to w
+  )
