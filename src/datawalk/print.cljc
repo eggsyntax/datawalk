@@ -12,6 +12,9 @@
                     :max-key-length 24
                     :debug-mode false})))
 
+;; initialize on load (as a dev convenience)
+(maybe-initialize-config)
+
 (defn- longest-length
   "Return the length of the longest (in # of chars) item in the coll"
   [coll]
