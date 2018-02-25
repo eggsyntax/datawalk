@@ -1,7 +1,5 @@
+* TODO make cljs version properly return values on quit/exit
 * TODO get tests working in cljs
-* TODO BUG path addition fails on sets
-** (as it sorta-should, since get-in won't work)
-** Decide on behavior for sets, lists, and derefables.
 * DONE automatically deref references?
 ** Ideal solution:
    1) Works correctly with forward & backward
@@ -35,15 +33,19 @@
 *** #(satisfies? IDeref %)
 ** Togglable setting for deref behavior?
 * DONE ensure lazy seqs are realized before stringifying! (only a problem w/ protocols?)
-* TODO change printing to protocol so that users can extend (see protocols branch)
+* DONE change printing to protocol so that users can extend (see protocols branch)
 ** In progress, see `protocols` branch
+* TODO extend protocol to cover drilling as well.
 * TODO get-in doesn't always work -- it fails on lists (w/ numeric indices). Somehow I never noticed...
 ** Convert all strings to vectors? But useless when user wants to exit repl and call get-in :/
+** BUG path addition fails on sets
+*** (as it sorta-should, since get-in won't work)
+*** Decide on behavior for sets, lists, and derefables.
 * TODO printing keys -- if namespaced keyword & longer than max-line-length, take `name` before limiting
 ** At (limit-right (:max-key-length @config) k)
 * TODO add example data (& instructions) - maybe with core/demo fn for ease
 * TODO need some easy way to access state from core so users don't need to require multiple nss
-* TODO handle java.lang.IndexOutOfBoundsException (& JS equivalent) when drilling
+* DONE handle java.lang.IndexOutOfBoundsException (& JS equivalent) when drilling
 * TODO THINK
 ** As I build protocols for other datatypes - json, datomic, etc - it'll probably entail extra dependencies.
 ** Consider creating 2 builds, one with minimal dependencies and one that's batteries-included & has protocols for a bunch of datatypes.
