@@ -1,6 +1,7 @@
 (ns datawalk.parse
   "Parses user input into a call to a fn in datawalk.datawalk"
-  (:require [datawalk.datawalk :as dw]))
+  (:require [datawalk.datawalk :as dw]
+            [datawalk.dw-protocol :refer [dw-drill]]))
 
 
 (defn read-int [s]
@@ -33,7 +34,9 @@
   ;; (println "raw input: " inp "is a" (type inp))
   ;; If #: drill into that value
   (if-let [n (read-int inp)]
-    (partial dw/drill n)
+    ;; TODO YOUAREHERE switch this to calling dw-drill
+    ;; (partial dw/drill n)
+    (partial dw-drill n)
     ;; else: get fn to call on data
     (get cmd-map inp
          (fn [data] (do (println "Unknown command:" inp)

@@ -1,6 +1,7 @@
 (ns datawalk.datawalk
   "Transforms data"
   (:require [clojure.pprint :refer [pprint]]
+            [datawalk.dw-protocol :refer [Datawalkable dw-drill]]
             [datawalk.print :as pr]
             [datawalk.util :as u]))
 
@@ -59,7 +60,17 @@
 ;; to clj derefable protocols not being available in cljs. Find something more
 ;; elegant ;P
 
-(defn drill
+(extend-protocol Datawalkable
+  clojure.lang.Sequential
+  (dw-drill [n data] "yessir!"
+    (let [next-data (nth data n)
+          next-path (conj (@paths data) n)]
+      (swap! paths assoc (u/not-set next-data) next-path)
+      next-data))
+
+  )
+
+#_(defn drill
   "Given a number n, drill down to that numbered item"
   [n data]
    ;; (println "drilling into" data)
