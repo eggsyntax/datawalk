@@ -143,35 +143,6 @@
        (eagerly (map-indexed #(cl-format nil "~2,'0D. ~A\n" %1 (quote-strings %2)) some-data))
        (str data)))))
 
-;; TODO create separate clj and cljs versions -- as written, this breaks in cljs
-(extend-protocol Datawalkable
-  #?(:clj Object
-     :cljs default)
-  (dw-to-string
-    ([data] (limitln (:max-line-length @config) data))
-    ([data top-level] (limitln (:max-line-length @config) data)))
-  java.util.Map
-  (dw-to-string
-    ([data] (stringify-map data))
-    ([data top-level] (stringify-map data top-level)))
-  clojure.lang.IPersistentSet
-  (dw-to-string
-    ([data] (stringify-set data))
-    ([data top-level] (stringify-set data top-level)))
-  clojure.lang.Seqable
-  (dw-to-string
-    ([data] (stringify-seq data))
-    ([data top-level] (stringify-seq data top-level)))
-  clojure.lang.IDeref
-  (dw-to-string
-    ([data] (stringify-derefable data))
-    ([data top-level] (stringify-derefable data top-level)))
-  nil
-  (dw-to-string
-    ([data] "")
-    ([data top-level] ""))
-  )
-
 (defn to-string
   [data]
   (dw-to-string data :top-level))
