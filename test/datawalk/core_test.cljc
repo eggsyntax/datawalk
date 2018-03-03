@@ -5,6 +5,7 @@
             [clojure.test :refer [is deftest testing run-tests]]
             [datawalk.core :refer [look-at w datawalk]]
             [datawalk.datawalk :as dw]
+            [datawalk.dw-protocol-implementation]
             [datawalk.print :as pr]))
 
 
