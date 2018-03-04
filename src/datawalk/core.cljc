@@ -1,6 +1,7 @@
 (ns datawalk.core
   (:require [clojure.string :as string]
             [datawalk.datawalkable :refer [Datawalkable dw-to-string]]
+            [datawalk.datawalkable-implementation]
             [datawalk.datawalk :as dw]
             [datawalk.print    :as pr]
             [datawalk.parse    :as ps]
