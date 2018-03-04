@@ -1,6 +1,7 @@
 (ns datawalk.datawalk
   "Transforms data"
   (:require [clojure.pprint :refer [pprint]]
+            [datawalk.datawalkable :refer [Datawalkable dw-drill]]
             [datawalk.print :as pr]
             [datawalk.util :as u]))
 
@@ -97,27 +98,9 @@
 (defn drill
   "Given a number n, drill down to that numbered item"
   [n data]
-   ;; (println "drilling into" data)
+   (println "drilling into" data)
   (try
-    (cond
-      (sequential? data)
-      , (drill-sequential n data)
-      (set? data)
-      , (drill-set n data)
-      (map? data)
-      , (drill-map n data)
-      #?(:clj (instance? clojure.lang.IBlockingDeref data))
-       ;; Drilling into a future/promise dereferences it with a fast
-       ;; timeout so we don't block if it doesn't contain a value yet.
-      , (drill-blocking-derefable n data)
-       ;; Otherwise it's a non-blocking refable, so we can just deref it
-      (instance? clojure.lang.IDeref data)
-       ;; Drilling into a derefable dereferences it
-      , (drill-derefable n data)
-      ;; TODO default
-      :else ; not drillable; no-op
-      , (do (println "Can't drill into a" (type data) "\n")
-            data))
+    (dw-drill n data)
     (catch #?(:clj IndexOutOfBoundsException
               :cljs js/Error) e
       (do (println "\nThere is no item numbered" n "in the list of current data. Try again.\n")
