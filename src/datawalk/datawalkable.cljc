@@ -14,4 +14,4 @@
   items which are not conceptually a seqable collection, the two arities
   can and generally should be identical."
   (dw-to-string [data] [data top-level] "convert to a string for datawalk")
-  (dw-drill [n data] "drill down into one member of this data"))
+  (dw-drill [data n] "drill down into one member of this data"))

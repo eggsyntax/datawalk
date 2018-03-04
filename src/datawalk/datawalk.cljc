@@ -98,9 +98,9 @@
 (defn drill
   "Given a number n, drill down to that numbered item"
   [n data]
-   (println "drilling into" data)
+   ;; (println "drilling into" data)
   (try
-    (dw-drill n data)
+    (dw-drill data n)
     (catch #?(:clj IndexOutOfBoundsException
               :cljs js/Error) e
       (do (println "\nThere is no item numbered" n "in the list of current data. Try again.\n")
