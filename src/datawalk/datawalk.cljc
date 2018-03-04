@@ -56,11 +56,18 @@
 (defn no-op [data]
   data)
 
+;; TODO pull `(conj (@paths data) n)` out into a helper fn to clarify that
+;; it's the same for all of them. Or maybe that PLUS the swap, although there's
+;; the slight variation of whether u/not-set is called.
+;; But also see line 110.
+;; (defn update-paths! data n)
+
 (defn drill-seqable [n data]
   (let [next-data (first (drop n data))
         next-path (conj (@paths data) n)]
     (swap! paths assoc (u/not-set next-data) next-path)
     next-data))
+
 (defn drill-sequential [n data]
   (let [next-data (nth data n)
         next-path (conj (@paths data) n)]
@@ -102,6 +109,10 @@
 ;; TODO added a quick fix in 0.1.12 because there was an outstanding bug due
 ;; to clj derefable protocols not being available in cljs. Find something more
 ;; elegant ;P
+
+;; TODO separate swapping to the path out of the individual drill functions;
+;; otherwise, users will add protocols for dw-drill without knowing to swap, and
+;; therefore the path will not be extended on those types.
 
 (defn drill
   "Given a number n, drill down to that numbered item"

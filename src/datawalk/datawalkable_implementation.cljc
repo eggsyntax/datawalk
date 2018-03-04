@@ -48,6 +48,9 @@
     ([data top-level] (p/stringify-seq data top-level)))
   (dw-drill [data n] (d/drill-sequential n data))
   ;; ClojureScript has no blocking derefables.
+  ;; TODO Unfortunately, IBlockingDeref doesn't descend from IDeref. So the two
+  ;; are checked in an indeterminate order. So an attempt to drill into a
+  ;; future/promise might block, if it happens to be treated as IDeref.
   #?@(:clj [clojure.lang.IBlockingDeref
             (dw-to-string
              ([data] (p/stringify-derefable data))
