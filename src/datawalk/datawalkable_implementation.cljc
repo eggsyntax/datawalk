@@ -32,12 +32,16 @@
     ([data] (p/stringify-set data))
     ([data top-level] (p/stringify-set data top-level)))
   (dw-drill [data n] (d/drill-set n data))
-  clojure.lang.Seqable
-  (dw-to-string
-    ([data] (p/stringify-seq data))
-    ([data top-level] (p/stringify-seq data top-level)))
-  ;; TODO will drill-sequential work on any seqable?
-  (dw-drill [data n] (d/drill-sequential n data))
+
+  ;; TODO is it a terrible idea to extend to Seqable? I fear it might be,
+  ;; because different types may respond idiosyncratically to `seq` (see
+  ;; datomic.query.EntityMap, for example)
+  ;;
+  ;; clojure.lang.Seqable
+  ;; (dw-to-string
+  ;;   ([data] (p/stringify-seq data))
+  ;;   ([data top-level] (p/stringify-seq data top-level)))
+  ;; (dw-drill [data n] (d/drill-seqable n data))
   clojure.lang.Sequential
   (dw-to-string
     ([data] (p/stringify-seq data))

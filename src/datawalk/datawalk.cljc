@@ -56,6 +56,11 @@
 (defn no-op [data]
   data)
 
+(defn drill-seqable [n data]
+  (let [next-data (first (drop n data))
+        next-path (conj (@paths data) n)]
+    (swap! paths assoc (u/not-set next-data) next-path)
+    next-data))
 (defn drill-sequential [n data]
   (let [next-data (nth data n)
         next-path (conj (@paths data) n)]
