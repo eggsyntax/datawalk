@@ -9,6 +9,7 @@
 ;; functions from datawalk.datawalk.
 
 ;; TODO create separate clj and cljs versions -- as written, this breaks in cljs
+;; because the types are mostly clj types
 (extend-protocol Datawalkable
   #?(:clj Object
      :cljs default)
@@ -16,7 +17,10 @@
     ([data] (p/limitln (:max-line-length @p/config) data))
     ([data top-level] (p/limitln (:max-line-length @p/config) data)))
   (dw-drill [n data]
-    (do (println "Can't drill into a" (type data) "\n")
+    (do (println "Don't know how to drill into" (type data)
+                 "\nTry extending the Datawalkable protocol to"
+                 (type data) "or one of its supers.\n"
+                 "Consider sharing the extension back to the datawalk project!\n")
         data))
   java.util.Map
   (dw-to-string
@@ -34,12 +38,12 @@
     ([data top-level] (p/stringify-seq data top-level)))
   ;; TODO will drill-sequential work on any seqable?
   (dw-drill [n data] (d/drill-sequential n data))
-  ;; clojure.lang.Sequential
-  ;; (dw-to-string
-  ;;   ([data] (p/stringify-seq data))
-  ;;   ([data top-level] (p/stringify-seq data top-level)))
-  ;; (dw-drill [n data] (d/drill-sequential n data))
-  ;; Only Clojure has blocking derefables.
+  clojure.lang.Sequential
+  (dw-to-string
+    ([data] (p/stringify-seq data))
+    ([data top-level] (p/stringify-seq data top-level)))
+  (dw-drill [n data] (d/drill-sequential n data))
+  ;; ClojureScript has no blocking derefables.
   #?@(:clj [clojure.lang.IBlockingDeref
             (dw-to-string
              ([data] (p/stringify-derefable data))
