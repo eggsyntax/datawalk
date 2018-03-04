@@ -6,9 +6,9 @@
 
 ;; TODO make note in readline: users please submit PRs for new extensions
 
-(print "Datawalk extensions: ")
+;; Datomic extensions:
 
-;; TODO YOUAREHERE grr, this won't compile --
+;; TODO grr, this won't compile --
 ;; throws java.lang.ClassNotFoundException: datomic.query.EntityMap even
 ;; though I'm explicitly catching that error. Presumably it's throwing at
 ;; compile time? Although the REPL starts up fine.
@@ -26,4 +26,17 @@
 ;;      (catch java.io.FileNotFoundException e
 ;;        (println "\nDatomic not found; omitting datomic profile.")))
 
-(println)
+
+
+;; The simplest solution, which we see below, is just to convert the type of the
+;; data to something that Datawalkable already knows how to handle. In the case
+;; of dw-to-string, the conversion doesn't become part of the next data.
+
+;; (extend-protocol datawalk.datawalkable/Datawalkable
+;;   datomic.query.EntityMap
+;;   (datawalk.datawalkable/dw-to-string
+;;     ([data] (datawalk.datawalkable/dw-to-string (ent-map->map data)))
+;;     ([data top-level] (datawalk.datawalkable/dw-to-string (ent-map->map data) top-level)))
+;;   ;; (datawalk.datawalkable/dw-drill [data n] (first (drop n data)))
+;;   (datawalk.datawalkable/dw-drill [data n] (datawalk.datawalkable/dw-drill (ent-map->map data) n))
+;;   )
