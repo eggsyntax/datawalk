@@ -105,6 +105,9 @@
   [n data]
    ;; (println "drilling into" data)
   (try
+    ;; Note that we have to switch argument order from here down. drill takes [n data]
+    ;; so that we can create (partial drill n). But dw-drill, as a protocol function, expects
+    ;; its first argument to determine the type -- so we have to swap.
     (dw-drill data n)
     (catch #?(:clj IndexOutOfBoundsException
               :cljs js/Error) e
