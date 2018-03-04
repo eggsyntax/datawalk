@@ -125,10 +125,10 @@
 
   #?(:clj ; blocking derefables are clj-only
      (let [blocking-refable (future (Thread/sleep 200) :done)]
-     (look-at blocking-refable)
-     (is (not= (datawalk blocking-refable "0") :done))
-     (Thread/sleep 200)
-     (is (= (datawalk blocking-refable "0") :done)))))
+       (look-at blocking-refable)
+       (is (not= (datawalk blocking-refable "0") :done))
+       (Thread/sleep 200)
+       (is (= (datawalk blocking-refable "0") :done)))))
 
 ;; Examine string output. Brittle, but necessary if we want to test the
 ;; print-centric tangential commands.
@@ -136,6 +136,3 @@
   (expect-str {1 2 3 [4 {5 6}]}
               [1 1 'p]
               "(00. 4 01. {5 6} ) (00. 5: 6 ) PATH: [3 1] (00. 5: 6 )"))
-
-;; (deftest eagerly-test
-;;   (is (= (pr/eagerly))))

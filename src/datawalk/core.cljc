@@ -4,12 +4,7 @@
             [datawalk.datawalkable-implementation]
             [datawalk.datawalk :as dw]
             [datawalk.print    :as pr]
-            [datawalk.parse    :as ps]
-
-            ;; Maybe later, for attempting read-line in cljs
-            #_[clojure.tools.reader :as rdr]
-            #_[clojure.tools.reader.reader-types :as rdrt])
-  ;; (:import datawalk.datawalkable Datawalkable)
+            [datawalk.parse    :as ps])
   #?(:cljs (:require-macros [datawalk.core :refer [w]])))
 
 ;; Notes:

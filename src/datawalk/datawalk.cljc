@@ -80,7 +80,10 @@
     (swap! paths assoc (u/not-set next-data) next-path)
     next-data))
 
-(defn drill-blocking-derefable [n data]
+(defn drill-blocking-derefable
+  "Drilling into a future/promise dereferences it with a fast timeout so we
+  don't block if it doesn't contain a value yet."
+  [n data]
   #?(:clj (if-let [next-data (deref data 100 nil)]
             (do (swap! paths assoc
                        (u/not-set next-data)
