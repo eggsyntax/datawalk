@@ -1,8 +1,8 @@
-(ns datawalk.dw-protocol-implementation
-  "Implements the protocol found in datawalk.dw-protocol"
+(ns datawalk.datawalkable-implementation
+  "Implements the protocol found in datawalk.datawalkable"
   (:require [datawalk.print :as p]
             [datawalk.datawalk :as d]
-            [datawalk.dw-protocol :refer [Datawalkable dw-to-string dw-drill]]))
+            [datawalk.datawalkable :refer [Datawalkable dw-to-string dw-drill]]))
 
 ;; Note that dw-to-string implementations use entirely p/ functions,
 ;; ie datawalk.print fns; dw-drill implemantations use entirely d/
@@ -57,4 +57,3 @@
     ([data] "")
     ([data top-level] ""))
   (dw-drill [n data] data))
-

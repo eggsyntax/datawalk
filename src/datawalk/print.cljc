@@ -2,8 +2,8 @@
   ;; We use cl-format because cljs doesn't have core fn format
   (:require [clojure.pprint :refer [cl-format]]
             [clojure.string :as string]
-            [datawalk.dw-protocol :refer [Datawalkable dw-to-string]])
-  ;; (:import (datawalk.dw-protocol dw-to-string))
+            [datawalk.datawalkable :refer [Datawalkable dw-to-string]])
+  ;; (:import (datawalk.datawalkable dw-to-string))
   )
 
 (def config (atom nil))
