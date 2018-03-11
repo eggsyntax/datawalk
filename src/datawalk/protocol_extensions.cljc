@@ -30,7 +30,13 @@
 
 ;; The simplest solution, which we see below, is just to convert the type of the
 ;; data to something that Datawalkable already knows how to handle. In the case
-;; of dw-to-string, the conversion doesn't become part of the next data.
+;; of dw-to-string, the conversion doesn't become part of the next data -- it's
+;; only converting temporarily for the sake of display.
+
+;; (defn ent-map->map [ent-map]
+;;   (let [ks (keys ent-map)
+;;         vs (map #(get ent-map %) ks)]
+;;     (zipmap ks vs)))
 
 ;; (extend-protocol datawalk.datawalkable/Datawalkable
 ;;   datomic.query.EntityMap
