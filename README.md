@@ -111,7 +111,6 @@ user> (w p) prints the path from the root to the current data.
 
 ## Demo (fully-interactive mode):
 
-
 ![Demo](resources/fully-interactive.gif?raw=true "Demo")
 
 ## Fully-interactive version (Clojure-only)
@@ -125,16 +124,11 @@ explanatory.
 ## Why two versions?
 
 I developed the semi-interactive version so I could use datawalk in
-ClojureScript. ClojureScript presents a challenge: while you can trivially get
-user input in Clojure with `read-line`, ClojureScript has no consistent way to
-do so (although some specific cljs repls like planck add that functionality
-themselves). Because of this issue, it's very difficult to create a true
-interactive program as described above.
-
-I've gotten some interesting tips about it, and @mfikes kindly pointed to
-his abio library (https://github.com/abiocljs) which begins to address the
-problem. I'm hoping that at some point I'll manage to put together a truly
-agnostic solution (PRs welcome!).
+ClojureScript. While you can trivially get user input in Clojure with
+`read-line`, ClojureScript has no consistent way to do so (although some
+specific cljs repls like planck add that functionality themselves). Because of
+this issue, it's very difficult to create a fully-interactive program as
+described above.
 
 But now that I've created the semi-interactive version as an interim solution,
 it turns out it has some real advantages. I've come to actually prefer it,
@@ -149,7 +143,7 @@ PROS:  - fewer keystrokes                  | - Runs anywhere
                                            | - You're always in a normal REPL
                                            |
 CONS:  - Clojure-only                      | - Requires more keystrokes
-       - Can't do other stuff in the       | - Not quite as fast to explore data
+       - Can't do other stuff in the       |
          middle of a session               |
 ```
 
