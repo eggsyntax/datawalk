@@ -15,9 +15,7 @@ maps with long namespaced keys. I prefer to minimize the amount of typing I have
 to do for repetitive tasks, and this is certainly one of those tasks.
 
 So datawalk pretty-prints the top level of your data structure, and then lets
-you drill down repeatedly, often with just a single keystroke (the number
-representing the item's position in the printed list, as shown next to the
-item) plus enter.
+you drill down repeatedly, with just a couple of keystrokes.
 
 Often the reason for drilling down at the REPL is to determine a path to pass to
 `get-in`, so datawalk will track and [p]rint the path from the original root to
@@ -59,10 +57,10 @@ Details at https://clojars.org/datawalk
 ## Usage summary:
 
 ```
-Clojure:
-  (datawalk.core/repl my-data-structure) to start datawalking.
 Clojure and ClojureScript:
   (look-at my-data-structure), and then (w [command])
+Clojure:
+  (datawalk.core/repl my-data-structure) to start datawalking.
 
 Commands:
   numbers: Enter any number to jump to the corresponding item
@@ -80,14 +78,6 @@ Commands:
   m :print-saved-map   ; print the map of saved data
   c :print-full-cur    ; print the current data in full, without truncation
 ```
-
-## Fully-interactive version (Clojure-only)
-
-Start the fully-interactive version with `(datawalk.core/repl my-data-structure)`.
-From there, you just enter a single character followed by enter -- a number
-to drill down to a specific item in the displayed list, `b` to step back to
-where you just were, `h` for help, and so on. It should be extremely self-
-explanatory.
 
 ## Semi-interactive version (Clojure and ClojureScript)
 
@@ -131,6 +121,13 @@ user> (w p) prints the path from the root to the current data.
 
 ![Demo](resources/semi-interactive.gif?raw=true "Demo")
 
+## Fully-interactive version (Clojure-only)
+
+Start the fully-interactive version with `(datawalk.core/repl my-data-structure)`.
+From there, you just enter a single character followed by enter -- a number
+to drill down to a specific item in the displayed list, `b` to step back to
+where you just were, `h` for help, and so on. It should be extremely self-
+explanatory.
 
 ## Why two versions?
 
@@ -147,8 +144,8 @@ problem. I'm hoping that at some point I'll manage to put together a truly
 agnostic solution (PRs welcome!).
 
 But now that I've created the semi-interactive version as an interim solution,
-it turns out it has some real advantages. Some people may actually prefer it,
-since it keeps you in an ordinary REPL at all times. Its only downside is that
+it turns out it has some real advantages. I've come to actually prefer it,
+since it keeps me in an ordinary REPL at all times. Its only downside is that
 you have to type a few more characters.
 
 ```
@@ -199,9 +196,13 @@ Just look down at the minibuffer and you'll see you can enter a command there.
 Note that it's important to q)uit the datawalk session, or your REPL buffer may
 be left in a problematic state.
 
+## Development
+
+* Currently all tests are cljc. You can `lein test` to run tests as clj, or `lein doo rhino dev` to run them as cljs.
+
 ## License
 
-Copyright © 2017 Jesse Davis (aka Egg Syntax)
+Copyright © 2017 Egg Davis Syntax
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
