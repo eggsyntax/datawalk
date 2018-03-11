@@ -2,22 +2,18 @@
   "Integration tests, really. Does a series of walks through data & verifies
   that things are as they should be."
   (:require [clojure.string :as s]
-            [clojure.test :refer [is deftest testing run-tests]]
+            #?(:clj [clojure.test :refer [is deftest testing run-tests]]
+               :cljs [cljs.test :refer [is deftest testing run-tests]])
+            #?(:cljs [doo.runner :refer-macros [doo-tests]])
             [datawalk.core :refer [look-at w datawalk]]
             [datawalk.datawalk :as dw]
             [datawalk.datawalkable-implementation]
             [datawalk.print :as pr]))
 
-
 ;; We're going to use the underlying `datawalk` fn rather than add complexity by
 ;; abstracting `read-line` just for test purposes. Unlike `repl`, `w` always
 ;; returns nil, so we have to check the global data to ensure the current data
 ;; (or other globals) are as expected.
-
-(defmacro gval
-  "global-value. Return the value in one of the global-state atoms."
-  [g-name#]
-  `(deref (var-get (var ~g-name#))))
 
 (defn dw-call
   "Walk through data with a series of steps, as though the steps
@@ -39,13 +35,13 @@
   [data steps expected-saved]
   (look-at data) ; init
   (dw-call data steps)
-  (is (= expected-saved (gval dw/saved))))
+  (is (= expected-saved (deref dw/saved))))
 
 (defn- whitespace-normalized [string]
   (s/trim (s/replace string #"\s+" "")))
 
 (defn matches-ish
-  "True if two strings differ by at most whitespace"
+  "True if two strings differ by at most whitespace, including newlines"
   [s1 s2]
   (= (whitespace-normalized s1) (whitespace-normalized s2)))
 
@@ -55,16 +51,7 @@
   [data steps expected-result]
   (look-at data) ; init
   (let [result (with-out-str (dw-call data steps))]
-    (println (str "**" result "**"))
-    (println "***")
-    (prn result)
-    (prn "whit-nor")
-    (prn (whitespace-normalized result))
-    (println)
-    (is (= (whitespace-normalized expected-result)
-           (whitespace-normalized result))))
-
-  #_(is (= expected-result (with-out-str (dw-call data steps)))))
+    (is (matches-ish expected-result result))))
 
 (deftest vec-test
   (expect [1 2 [3 [[4] 5 6]]]
@@ -136,3 +123,6 @@
   (expect-str {1 2 3 [4 {5 6}]}
               [1 1 'p]
               "(00. 4 01. {5 6} ) (00. 5: 6 ) PATH: [3 1] (00. 5: 6 )"))
+
+
+#?(:cljs (doo-tests 'datawalk.core-test))
