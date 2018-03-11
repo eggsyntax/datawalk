@@ -5,6 +5,11 @@ https://github.com/eggsyntax/datawalk
 ```
 [datawalk "0.1.12"]
 ```
+or for the adventurous,
+```
+[datawalk "2.0.0-SNAPSHOT"]
+```
+
 
 Provides a simple interactive data explorer.
 
@@ -39,7 +44,7 @@ You can also move [b]ackward or [f]orward in time, or move [u]p a level, or jump
 back to the original [r]oot, or use [!] (function) to call an arbitrary
 single-arg │ function on the current data (jumping to the result).
 
-datawalk tries to do one thing well: eliminate tedium and typing when navigating
+Datawalk tries to do one thing well: eliminate tedium and typing when navigating
 data structures. The learning curve should be trivial; please let me know if it's
 not and I'll try to change that. I hope you find it as useful as I have.
 
