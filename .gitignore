@@ -10,3 +10,5 @@ pom.xml.asc
 .hgignore
 .hg/
 .cljs_rhino_repl/
+out/
+war/

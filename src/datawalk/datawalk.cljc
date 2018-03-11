@@ -44,7 +44,7 @@
       (swap! from-time conj present)
       (swap! to-time pop)
       new-present)
-    (do (println "You have reached the end of time. You shall go no further.\n")
+    (do (println "**** You have reached the end of time. You shall go no further. ****\n")
         present)))
 
 ;;;;;;; User API
