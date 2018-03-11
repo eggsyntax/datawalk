@@ -2,6 +2,10 @@
 
 https://github.com/eggsyntax/datawalk
 
+```
+[datawalk "0.1.12"]
+```
+
 Provides a simple interactive data explorer.
 
 ```
@@ -39,27 +43,16 @@ datawalk tries to do one thing well: eliminate tedium and typing when navigating
 data structures. The learning curve should be trivial; please let me know if it's
 not and I'll try to change that. I hope you find it as useful as I have.
 
-## Demo (fully-interactive mode):
+## Demo (semi-interactive mode):
 
-
-![Demo](resources/fully-interactive.gif?raw=true "Demo")
-
-
-## Installation:
-
-Leiningen:
-```
-[datawalk "0.1.12"]
-```
-
-Details at https://clojars.org/datawalk
+![Demo](resources/semi-interactive.gif?raw=true "Demo")
 
 ## Usage summary:
 
 ```
 Clojure and ClojureScript:
   (look-at my-data-structure), and then (w [command])
-Clojure:
+Clojure-only:
   (datawalk.core/repl my-data-structure) to start datawalking.
 
 Commands:
@@ -116,10 +109,10 @@ user> (w m) prints the map of saved values.
 user> (w p) prints the path from the root to the current data.
 ```
 
-## Demo (semi-interactive mode):
+## Demo (fully-interactive mode):
 
 
-![Demo](resources/semi-interactive.gif?raw=true "Demo")
+![Demo](resources/fully-interactive.gif?raw=true "Demo")
 
 ## Fully-interactive version (Clojure-only)
 
