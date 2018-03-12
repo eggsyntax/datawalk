@@ -106,10 +106,6 @@
            (conj (@paths data) 'deref))
     next-data))
 
-;; TODO added a quick fix in 0.1.12 because there was an outstanding bug due
-;; to clj derefable protocols not being available in cljs. Find something more
-;; elegant ;P
-
 ;; TODO separate swapping to the path out of the individual drill functions;
 ;; otherwise, users will add protocols for dw-drill without knowing to swap, and
 ;; therefore the path will not be extended on those types.
@@ -127,7 +123,6 @@
               :cljs js/Error) e
       (do (println "\nThere is no item numbered" n "in the list of current data. Try again.\n")
           data))))
-
 
 (defn quit [data]
   ;; Returns saved data
