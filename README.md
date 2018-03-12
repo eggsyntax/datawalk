@@ -7,7 +7,7 @@ https://github.com/eggsyntax/datawalk
 ```
 or for the adventurous,
 ```
-[datawalk "2.0.0-SNAPSHOT"]
+[datawalk "0.1.17-SNAPSHOT"]
 ```
 
 
