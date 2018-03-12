@@ -51,22 +51,24 @@
        ([data] (p/stringify-seq data))
        ([data top-level] (p/stringify-seq data top-level)))
      (dw-drill [data n] (d/drill-sequential n data))
-     ;; ClojureScript has no blocking derefables. (but what's IDerefWithTimeout? I don't see it used)
-     ;; TODO Unfortunately, IBlockingDeref doesn't descend from IDeref. So the two
-     ;; are checked in an indeterminate order. So an attempt to drill into a
-     ;; future/promise might block, if it happens to be treated as IDeref.
-     clojure.lang.IBlockingDeref
-     (dw-to-string
-       ([data] (p/stringify-derefable data))
-       ([data top-level] (p/stringify-derefable data top-level)))
-      ;; Drilling into a future/promise dereferences it with a fast
-      ;; timeout so we don't block if it doesn't contain a value yet.
-     (dw-drill [data n] (d/drill-blocking-derefable n data))
+     ;; clojure.lang.IBlockingDeref
+     ;; (dw-to-string
+     ;;   ([data] (p/stringify-derefable data))
+     ;;   ([data top-level] (p/stringify-derefable data top-level)))
+     ;; (dw-drill [data n] (d/drill-blocking-derefable n data))
      clojure.lang.IDeref
      (dw-to-string
        ([data] (p/stringify-derefable data))
        ([data top-level] (p/stringify-derefable data top-level)))
-     (dw-drill [data n] (d/drill-derefable n data))
+     ;; Can't use a separate protocol implementation for IBlockingDeref, because
+     ;; IBlockingDeref doesn't descend from IDeref. Therefore the two would be
+     ;; checked in an indeterminate order. So an attempt to drill into a
+     ;; future/promise might block, if it happens to be treated as IDeref.
+     (dw-drill [data n] (if (instance? clojure.lang.IBlockingDeref data)
+                          ;; Drilling into a future/promise dereferences it with a fast
+                          ;; timeout so we don't block if it doesn't contain a value yet.
+                          (d/drill-blocking-derefable n data)
+                          (d/drill-derefable n data)))
      nil
      (dw-to-string
        ([data] "")
