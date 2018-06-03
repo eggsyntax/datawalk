@@ -47,6 +47,9 @@
     (do (println "**** You have reached the end of time. You shall go no further. ****\n")
         present)))
 
+(defn add-path [data path]
+  (swap! paths assoc (u/not-set data) path))
+
 ;;;;;;; User API
 
 ;; All API fns take data as their final argument, and return updated data.
@@ -64,27 +67,27 @@
 
 (defn drill-seqable [n data]
   (let [next-data (first (drop n data))
-        next-path (conj (@paths data) n)]
-    (swap! paths assoc (u/not-set next-data) next-path)
+        next-path (conj (@paths (u/not-set data)) n)]
+    (add-path next-data next-path)
     next-data))
 
 (defn drill-sequential [n data]
   (let [next-data (nth data n)
-        next-path (conj (@paths data) n)]
-    (swap! paths assoc (u/not-set next-data) next-path)
+        next-path (conj (@paths (u/not-set data)) n)]
+    (add-path next-data next-path)
     next-data))
 
 (defn drill-set [n data]
   (let [next-data (nth (u/not-set data) n)
-        next-path (conj (@paths data) n)]
-    (swap! paths assoc next-data next-path)
+        next-path (conj (@paths (u/not-set data)) n)]
+    (add-path next-data next-path)
     next-data))
 
 (defn drill-map [n data]
   (let [k (nth (keys data) n)
         next-data (get data k)
-        next-path (conj (@paths data) k)]
-    (swap! paths assoc (u/not-set next-data) next-path)
+        next-path (conj (@paths (u/not-set data)) k)]
+    (add-path next-data next-path)
     next-data))
 
 (defn drill-blocking-derefable
@@ -92,18 +95,16 @@
   don't block if it doesn't contain a value yet."
   [n data]
   #?(:clj (if-let [next-data (deref data 100 nil)]
-            (do (swap! paths assoc
-                       (u/not-set next-data)
-                       (conj (@paths data) 'deref))
+            (do (add-path next-data
+                           (conj (@paths (u/not-set data)) 'deref))
                 next-data)
             (do (prn "Can't deref, no data yet!")
                 data))))
 
 (defn drill-derefable [n data]
   (let [next-data (deref data)]
-    (swap! paths assoc
-           (u/not-set next-data)
-           (conj (@paths data) 'deref))
+    (add-path next-data
+               (conj (@paths (u/not-set data)) 'deref))
     next-data))
 
 ;; TODO separate swapping to the path out of the individual drill functions;
@@ -191,7 +192,7 @@
 
 (defn print-path [data]
   (println "PATH:")
-  (println (@paths data))
+  (println (@paths (u/not-set data)))
   (println)
   data)
 
