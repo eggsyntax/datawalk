@@ -4,7 +4,8 @@
             [datawalk.datawalkable-implementation]
             [datawalk.datawalk :as dw]
             [datawalk.print    :as pr]
-            [datawalk.parse    :as ps])
+            [datawalk.parse    :as ps]
+            [datawalk.util     :as u])
   #?(:cljs (:require-macros [datawalk.core :refer [w]])))
 
 ;; Notes:
@@ -33,7 +34,7 @@
   (reset! dw/the-past [])
   (reset! dw/the-future []))
 
-(defn print-globals [] (pr/print-globals  (@dw/paths @dw/data) @dw/saved @dw/the-past @dw/the-future))
+(defn print-globals [] (pr/print-globals  (@dw/paths (u/not-set @dw/data)) @dw/saved @dw/the-past @dw/the-future))
 
 (defn- read-input
   "Get user input (at repl) -- later this needs to be generalized for both clj
