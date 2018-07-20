@@ -62,8 +62,16 @@
 ;; TODO pull `(conj (@paths data) n)` out into a helper fn to clarify that
 ;; it's the same for all of them. Or maybe that PLUS the swap, although there's
 ;; the slight variation of whether u/not-set is called.
-;; But also see line 110.
-;; (defn update-paths! data n)
+;; DONE ish. See `add-path` above. Is there any reason why we *shouldn't*
+;; call u/not-set on all of them? Should only affect sets.
+;; TODO YOUAREHERE just tried an experiment, having `add-path` called in `drill`
+;; rather than in the individual drill statements. I think it works fine for
+;; most things, because they all look like `(conj (@paths (u/not-set data)) n)`.
+;; But there are a couple of critical ones (drill-map, and the derefables) that
+;; look different. One option would be to create a 3rd fn for the Datawalkable
+;; protocol, `next-path` or something, and then give it a default (the conj I
+;; showed above). Users would still need to know about it in order to extend
+;; Datawalkable, but most wouldn't have to write their own implementation.
 
 (defn drill-seqable [n data]
   (let [next-data (first (drop n data))
